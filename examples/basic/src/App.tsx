@@ -1,59 +1,23 @@
-import { useRef } from "react";
-import { Chessboard, ChessboardRef } from "react-chess";
+import { Chessboard } from "react-chess";
 
-// Import the required CSS
-import "../../../dist/styles/chessground.base.css";
-import "../../../dist/styles/chessground.brown.css";
-import "../../../dist/styles/chessground.cburnett.css";
+import "../../../dist/assets/chessground.base.css";
+import "../../../dist/assets/chessground.brown.css";
+import "../../../dist/assets/chessground.cburnett.css";
 
 const App = () => {
-  const boardRef = useRef<ChessboardRef>(null);
-
-  const examples = [
-    {
-      title: "Default Board",
-      render: () => (
-        <div style={{ width: "400px", height: "400px", marginBottom: "2rem" }}>
-          <Chessboard
-            ref={boardRef}
-            onMove={(from, to) => {
-              console.log(`Moved from ${from} to ${to}`);
-              console.log(`Current FEN: ${boardRef.current?.game?.fen()}`);
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      title: "Custom Position",
-      render: () => (
-        <div style={{ width: "400px", height: "400px", marginBottom: "2rem" }}>
-          <Chessboard
-            fen="r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3"
-            orientation="black"
-          />
-        </div>
-      ),
-    },
-    {
-      title: "Different Size",
-      render: () => (
-        <div style={{ width: "300px", height: "300px", marginBottom: "2rem" }}>
-          <Chessboard />
-        </div>
-      ),
-    },
-  ];
+  const samplePgn = "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6";
 
   return (
-    <div>
-      <h1>React Chess Examples</h1>
-      {examples.map((example, index) => (
-        <div key={index}>
-          <h2>{example.title}</h2>
-          {example.render()}
-        </div>
-      ))}
+    <div style={{ width: "400px" }}>
+      <Chessboard
+        pgn={samplePgn}
+        showMoveHistory={true}
+        showNavigation={true}
+        onPositionChange={(fen, moves) => {
+          console.log("Position changed:", fen);
+          console.log("Moves:", moves);
+        }}
+      />
     </div>
   );
 };

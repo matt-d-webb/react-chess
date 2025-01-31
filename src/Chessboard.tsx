@@ -1,43 +1,48 @@
-import React, {
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  forwardRef,
-} from "react";
+import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { Chessground } from "chessground";
+import { Chess, Move } from "chess.js";
+
 import type { Api } from "chessground/api";
 import type { Key } from "chessground/types";
-import { Chess } from "chess.js";
 import type { ChessboardProps, ChessboardRef } from "./types";
+
+import { MoveHistory } from "./components/MoveHistory";
+import { Navigation } from "./components/Navigation";
 
 export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
   (
     {
-      width = "100%",
-      height = "100%",
+      width = "400px",
+      height = "400px",
       fen = "start",
       orientation = "white",
       onMove,
-      onDrop,
-      gameInstance,
-      ...config
+      pgn,
+      showMoveHistory = false,
+      showNavigation = false,
+      onPositionChange,
     },
     ref
   ) => {
     const boardRef = useRef<HTMLDivElement>(null);
     const apiRef = useRef<Api>();
-    const gameRef = useRef<Chess>(
-      gameInstance || new Chess(fen === "start" ? undefined : fen)
-    );
+    const gameRef = useRef<Chess>(new Chess(fen === "start" ? undefined : fen));
+    const [moveHistory, setMoveHistory] = useState<Move[]>([]);
+    const [currentMoveIndex, setCurrentMoveIndex] = useState<number>(-1);
 
-    useImperativeHandle(ref, () => ({
-      get api() {
-        return apiRef.current;
-      },
-      get game() {
-        return gameRef.current;
-      },
-    }));
+    useEffect(() => {
+      if (pgn && gameRef.current) {
+        try {
+          gameRef.current.loadPgn(pgn);
+          const moves = gameRef.current.history({ verbose: true });
+          setMoveHistory(moves);
+          setCurrentMoveIndex(moves.length - 1);
+          apiRef.current?.set({ fen: gameRef.current.fen() });
+        } catch (e) {
+          console.error("Invalid PGN:", e);
+        }
+      }
+    }, [pgn]);
 
     useEffect(() => {
       if (!boardRef.current) return;
@@ -57,19 +62,26 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
             const move = chess.move({
               from: orig,
               to: dest,
-              promotion: "q", // always promote to queen for simplicity
+              promotion: "q", // TODO: Allow promotion selection
             });
 
             if (move) {
-              onMove?.(orig, dest);
-              cg.set({ fen: chess.fen() });
+              onMove?.(orig as Key, dest as Key);
+
+              const moves = chess.history({ verbose: true });
+              setMoveHistory(moves);
+              setCurrentMoveIndex(moves.length - 1);
+              onPositionChange?.(chess.fen(), moves);
+
+              cg.set({
+                fen: chess.fen(),
+                movable: {
+                  dests: getDests(chess),
+                },
+              });
             }
           },
-          dropNewPiece: (piece, key) => {
-            onDrop?.(key as Key, key as Key);
-          },
         },
-        ...config,
       });
 
       apiRef.current = cg;
@@ -79,7 +91,6 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
       };
     }, []);
 
-    // Update FEN if changed externally
     useEffect(() => {
       if (apiRef.current && fen !== "start") {
         apiRef.current.set({ fen });
@@ -87,20 +98,63 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
       }
     }, [fen]);
 
+    const navigateToMove = (index: number) => {
+      if (!gameRef.current || !apiRef.current) return;
+
+      const chess = gameRef.current;
+      chess.reset();
+
+      const moves = moveHistory.slice(0, index + 1);
+      moves.forEach((move) => {
+        chess.move(move);
+      });
+
+      apiRef.current.set({
+        fen: chess.fen(),
+        movable: {
+          dests: getDests(chess),
+        },
+      });
+      setCurrentMoveIndex(index);
+      onPositionChange?.(chess.fen(), moves);
+    };
+
+    const handleFirst = () => navigateToMove(-1);
+    const handlePrevious = () => navigateToMove(currentMoveIndex - 1);
+    const handleNext = () => navigateToMove(currentMoveIndex + 1);
+    const handleLast = () => navigateToMove(moveHistory.length - 1);
+
     return (
-      <div
-        ref={boardRef}
-        style={{
-          width,
-          height,
-          position: "relative",
-        }}
-      />
+      <div>
+        <div
+          ref={boardRef}
+          style={{
+            width,
+            height,
+          }}
+        />
+        {showMoveHistory && (
+          <MoveHistory
+            moves={moveHistory}
+            onMoveClick={navigateToMove}
+            currentMoveIndex={currentMoveIndex}
+          />
+        )}
+        {showNavigation && (
+          <Navigation
+            onFirst={handleFirst}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
+            onLast={handleLast}
+            canGoBackward={currentMoveIndex > -1}
+            canGoForward={currentMoveIndex < moveHistory.length - 1}
+          />
+        )}
+      </div>
     );
   }
 );
 
-// Helper function to get possible moves
 function getDests(chess: Chess): Map<Key, Key[]> {
   const dests = new Map<Key, Key[]>();
   chess.moves({ verbose: true }).forEach((move) => {

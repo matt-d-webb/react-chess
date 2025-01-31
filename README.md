@@ -1,40 +1,57 @@
-# React Chess
+# @mdwebb/react-chess
 
-A React wrapper for [chessground](https://github.com/lichess-org/chessground) with [chess.js](https://github.com/jhlywa/chess.js) integration.
+A React chess component powered by [chessground](https://github.com/lichess-org/chessground) and [chess.js](https://github.com/jhlywa/chess.js).
+
+## Features
+
+- 🎮 Full chess game functionality
+- 📝 Move history with navigation
+- 🎯 Legal move validation
+- 📋 PGN support
+- ⚡ Written in TypeScript
+- 🎨 Customizable styling
 
 ## Installation
 
 ```bash
 npm install @mdwebb/react-chess
-# or
-yarn add @mdwebb/react-chess
 ```
 
 ## Usage
 
-```tsx
-import { Chessboard } from "@mdwebb/react-chess";
+First, import the required CSS:
 
-import { useRef } from "react";
-import type { ChessboardRef } from "react-chess";
-
+```typescript
 import "@mdwebb/react-chess/dist/styles/chessground.base.css";
 import "@mdwebb/react-chess/dist/styles/chessground.brown.css";
 import "@mdwebb/react-chess/dist/styles/chessground.cburnett.css";
+```
+
+### Basic Board
+
+```tsx
+import { Chessboard } from "@mdwebb/react-chess";
 
 function App() {
-  const boardRef = useRef<ChessboardRef>(null);
-
   return (
     <div style={{ width: "400px", height: "400px" }}>
+      <Chessboard />
+    </div>
+  );
+}
+```
+
+### With Move History and Navigation
+
+```tsx
+function App() {
+  return (
+    <div style={{ width: "400px" }}>
       <Chessboard
-        ref={boardRef}
-        fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-        orientation="white"
+        showMoveHistory={true}
+        showNavigation={true}
         onMove={(from, to) => {
           console.log(`Moved from ${from} to ${to}`);
-          // Access the chess.js instance
-          console.log(boardRef.current?.game?.fen());
         }}
       />
     </div>
@@ -42,29 +59,94 @@ function App() {
 }
 ```
 
-## Props
+### Loading a PGN
 
-| Prop         | Type                               | Default   | Description                |
-| ------------ | ---------------------------------- | --------- | -------------------------- |
-| width        | string \| number                   | '100%'    | Board width                |
-| height       | string \| number                   | '100%'    | Board height               |
-| fen          | string                             | 'start'   | FEN string for position    |
-| orientation  | 'white' \| 'black'                 | 'white'   | Board orientation          |
-| onMove       | (from: string, to: string) => void | undefined | Called after each move     |
-| onDrop       | (from: string, to: string) => void | undefined | Called after piece drop    |
-| gameInstance | Chess                              | undefined | Optional chess.js instance |
+```tsx
+function App() {
+  const pgn = "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6";
 
-Plus all [chessground configuration options](https://github.com/lichess-org/chessground/blob/master/src/config.ts).
-
-## Ref API
-
-```typescript
-interface ChessboardRef {
-  api: Api | undefined; // Chessground API
-  game: Chess | undefined; // chess.js instance
+  return (
+    <div style={{ width: "400px" }}>
+      <Chessboard
+        pgn={pgn}
+        showMoveHistory={true}
+        showNavigation={true}
+        onPositionChange={(fen, moves) => {
+          console.log("Current FEN:", fen);
+          console.log("Move history:", moves);
+        }}
+      />
+    </div>
+  );
 }
 ```
 
-## License
+## Using Ref to Access Chess Instance
 
-[MIT](./LICENCE)
+```tsx
+import { useRef } from "react";
+import { Chessboard, ChessboardRef } from "@mdwebb/react-chess";
+
+function App() {
+  const boardRef = useRef<ChessboardRef>(null);
+
+  const handleClick = () => {
+    // Access the chess.js instance
+    const fen = boardRef.current?.game?.fen();
+    console.log("Current FEN:", fen);
+
+    // Access the chessground API
+    const api = boardRef.current?.api;
+    // Use api methods...
+  };
+
+  return (
+    <div style={{ width: "400px" }}>
+      <Chessboard ref={boardRef} />
+      <button onClick={handleClick}>Get Position</button>
+    </div>
+  );
+}
+```
+
+## Props
+
+| Prop               | Type                                   | Default     | Description                                                                    |
+| ------------------ | -------------------------------------- | ----------- | ------------------------------------------------------------------------------ |
+| `width`            | `string \| number`                     | `'400px'`   | Width of the chess board                                                       |
+| `height`           | `string \| number`                     | `'400px'`   | Height of the chess board                                                      |
+| `fen`              | `string`                               | `'start'`   | FEN string representing the board position. Use `'start'` for initial position |
+| `orientation`      | `'white' \| 'black'`                   | `'white'`   | Which side of the board to show at the bottom                                  |
+| `onMove`           | `(from: string, to: string) => void`   | `undefined` | Callback fired when a piece is moved                                           |
+| `pgn`              | `string`                               | `undefined` | PGN notation to load a complete game                                           |
+| `showMoveHistory`  | `boolean`                              | `false`     | Whether to show the move history panel                                         |
+| `showNavigation`   | `boolean`                              | `false`     | Whether to show navigation controls                                            |
+| `onPositionChange` | `(fen: string, moves: Move[]) => void` | `undefined` | Callback fired when the board position changes                                 |
+| `gameInstance`     | `Chess`                                | `undefined` | Optional chess.js instance                                                     |
+
+## Chessground Props
+
+The component also accepts all [chessground configuration options](https://github.com/lichess-org/chessground/blob/master/src/config.ts). Common options include:
+
+| Prop                 | Type                           | Default  | Description                                  |
+| -------------------- | ------------------------------ | -------- | -------------------------------------------- |
+| `movable.free`       | `boolean`                      | `false`  | Whether to allow free movement without rules |
+| `movable.color`      | `'white' \| 'black' \| 'both'` | `'both'` | Which color is allowed to move               |
+| `draggable.enabled`  | `boolean`                      | `true`   | Whether pieces can be dragged                |
+| `premovable.enabled` | `boolean`                      | `true`   | Whether premoves are allowed                 |
+| `viewOnly`           | `boolean`                      | `false`  | If true, disable all interactions            |
+
+## Ref Methods
+
+The component exposes certain functionality through a ref:
+
+```typescript
+interface ChessboardRef {
+  api: Api | undefined;  // Chessground API for direct board manipulation
+  game: Chess | undefined;  // chess.js instance for game logic
+}
+
+### LICENSE
+
+[MIT](./LICENCE) © Matt Webb
+```

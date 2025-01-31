@@ -1,4 +1,5 @@
 export { Chessboard } from "./Chessboard";
+export { MoveHistory } from "./components/MoveHistory";
 export type { ChessboardProps, ChessboardRef } from "./types";
 
 export const styles = {

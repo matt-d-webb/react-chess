@@ -1,7 +1,7 @@
 import type { Api } from "chessground/api";
 import type { Config } from "chessground/config";
 import type { Key } from "chessground/types";
-import { Chess } from "chess.js";
+import { Chess, Move } from "chess.js";
 
 export interface ChessboardProps extends Partial<Config> {
   width?: string | number;
@@ -9,8 +9,10 @@ export interface ChessboardProps extends Partial<Config> {
   fen?: string;
   orientation?: "white" | "black";
   onMove?: (from: Key, to: Key) => void;
-  onDrop?: (key: Key, to: Key) => void;
-  gameInstance?: Chess;
+  pgn?: string;
+  showMoveHistory?: boolean;
+  showNavigation?: boolean;
+  onPositionChange?: (fen: string, moves: Move[]) => void;
 }
 
 export interface ChessboardRef {
