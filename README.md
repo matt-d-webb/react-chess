@@ -67,4 +67,4 @@ interface ChessboardRef {
 
 ## License
 
-MIT
+[MIT](./LICENCE)
