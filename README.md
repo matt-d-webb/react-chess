@@ -1,4 +1,4 @@
-# @mdwebb/react-chess
+# React Chess
 
 A React chess component powered by [chessground](https://github.com/lichess-org/chessground) and [chess.js](https://github.com/jhlywa/chess.js).
 
@@ -142,11 +142,11 @@ The component exposes certain functionality through a ref:
 
 ```typescript
 interface ChessboardRef {
-  api: Api | undefined;  // Chessground API for direct board manipulation
-  game: Chess | undefined;  // chess.js instance for game logic
+  api: Api | undefined; // Chessground API for direct board manipulation
+  game: Chess | undefined; // chess.js instance for game logic
 }
+```
 
 ### LICENSE
 
 [MIT](./LICENCE) © Matt Webb
-```
