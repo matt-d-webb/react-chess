@@ -1,11 +1,15 @@
-import React, { useEffect, useRef, useState, forwardRef } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { Chessground } from "chessground";
 import { Chess, Move } from "chess.js";
-
 import type { Api } from "chessground/api";
 import type { Key } from "chessground/types";
 import type { ChessboardProps, ChessboardRef } from "./types";
-
 import { MoveHistory } from "./components/MoveHistory";
 import { Navigation } from "./components/Navigation";
 
@@ -29,6 +33,15 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
     const gameRef = useRef<Chess>(new Chess(fen === "start" ? undefined : fen));
     const [moveHistory, setMoveHistory] = useState<Move[]>([]);
     const [currentMoveIndex, setCurrentMoveIndex] = useState<number>(-1);
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        api: apiRef.current || null,
+        game: gameRef.current || null,
+      }),
+      []
+    );
 
     useEffect(() => {
       if (pgn && gameRef.current) {
@@ -62,7 +75,7 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
             const move = chess.move({
               from: orig,
               to: dest,
-              promotion: "q", // TODO: Allow promotion selection
+              promotion: "q",
             });
 
             if (move) {
@@ -125,12 +138,14 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
     const handleLast = () => navigateToMove(moveHistory.length - 1);
 
     return (
-      <div>
+      <div className="chess-board-container">
         <div
           ref={boardRef}
+          className="chess-board"
           style={{
-            width,
-            height,
+            width: typeof width === "number" ? `${width}px` : width,
+            height: typeof height === "number" ? `${height}px` : height,
+            position: "relative",
           }}
         />
         {showMoveHistory && (

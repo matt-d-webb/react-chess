@@ -16,6 +16,6 @@ export interface ChessboardProps extends Partial<Config> {
 }
 
 export interface ChessboardRef {
-  api: Api | undefined;
-  game: Chess | undefined;
+  api: Api | null;
+  game: Chess | null;
 }
