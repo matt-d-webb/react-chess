@@ -22,9 +22,9 @@ npm install @mdwebb/react-chess
 First, import the required CSS:
 
 ```typescript
-import "@mdwebb/react-chess/dist/styles/chessground.base.css";
-import "@mdwebb/react-chess/dist/styles/chessground.brown.css";
-import "@mdwebb/react-chess/dist/styles/chessground.cburnett.css";
+import "@mdwebb/react-chess/dist/assets/chessground.base.css";
+import "@mdwebb/react-chess/dist/assets/chessground.brown.css";
+import "@mdwebb/react-chess/dist/assets/chessground.cburnett.css";
 ```
 
 ### Basic Board
