@@ -11,6 +11,10 @@ A React chess component powered by [chessground](https://github.com/lichess-org/
 - ⚡ Written in TypeScript
 - 🎨 Customizable styling
 
+<p align="center">
+  <img width="200px" src="/examples/basic/images/example-game.png" />
+</p>
+
 ## Installation
 
 ```bash
