@@ -5,7 +5,15 @@ import "../../../dist/assets/chessground.brown.css";
 import "../../../dist/assets/chessground.cburnett.css";
 
 const App = () => {
-  const samplePgn = "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6";
+  const samplePgn = `[Event "F/S Return Match"]
+[Site "Belgrade, Serbia JUG"]
+[Date "1992.11.04"]
+[Round "29"]
+[White "Fischer, Robert J."]
+[Black "Spassky, Boris V."]
+[Result "1/2-1/2"]
+
+1. e4 e5 2. Nf3 Nc6 {This is a comment} 3. Bb5 $1 a6 $6 4. Ba4`;
 
   return (
     <div className="flex justify-center items-center px-4 py-8">
