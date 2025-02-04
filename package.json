@@ -1,7 +1,7 @@
 {
   "name": "@mdwebb/react-chess",
-  "version": "1.0.2",
-  "description": "React chess component with chessground and chess.js integration",
+  "version": "1.1.0",
+  "description": "React chess component with chessground, chess.js and tailwind integration",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
@@ -22,7 +22,10 @@
   },
   "dependencies": {
     "chess.js": "^1.0.0-beta.6",
-    "chessground": "^8.3.7"
+    "chessground": "^8.3.7",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.474.0",
+    "tailwind-merge": "^3.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.26.7",

@@ -16,10 +16,14 @@ jest.mock("chessground", () => ({
   Chessground: jest.fn().mockImplementation(() => mockChessgroundApi),
 }));
 
+jest.mock("@/lib/utils", () => ({
+  cn: (...inputs: any) => inputs.filter(Boolean).join(" "),
+}));
+
 describe("Chessboard", () => {
   it("renders without crashing", () => {
     const { container } = render(<Chessboard />);
-    expect(container.querySelector(".chess-board")).toBeInTheDocument();
+    expect(container.querySelector("[data-chessboard]")).toBeInTheDocument();
   });
 
   it("shows move history when showMoveHistory is true", () => {
@@ -30,18 +34,16 @@ describe("Chessboard", () => {
 
   it("shows navigation controls when showNavigation is true", () => {
     render(<Chessboard showNavigation={true} />);
-    expect(screen.getByText("⏮️")).toBeInTheDocument();
-    expect(screen.getByText("⏭️")).toBeInTheDocument();
+    const buttons = screen.getAllByRole("button");
+    expect(buttons).toHaveLength(4);
   });
 
   it("initializes with correct dimensions", () => {
     const { container } = render(<Chessboard width="500px" height="500px" />);
-
-    const board = container.querySelector(".chess-board");
+    const board = container.querySelector("[data-chessboard]");
     expect(board).toHaveStyle({
       width: "500px",
       height: "500px",
-      position: "relative",
     });
   });
 
@@ -63,12 +65,18 @@ describe("Chessboard", () => {
     const ref = React.createRef<ChessboardRef>();
     render(<Chessboard ref={ref} />);
 
-    // Wait for the API to be initialized
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
     expect(ref.current).toBeTruthy();
     expect(ref.current?.game).toBeTruthy();
+  });
+
+  it("applies custom className correctly", () => {
+    const customClass = "custom-board";
+    const { container } = render(<Chessboard className={customClass} />);
+    const boardContainer = container.firstChild as HTMLElement;
+    expect(boardContainer.className).toContain(customClass);
   });
 });

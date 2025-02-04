@@ -1,59 +1,54 @@
-import React from "react";
+import * as React from "react";
 import type { Move } from "chess.js";
+import { cn } from "../lib/utils";
 
-interface MoveHistoryProps {
+interface MoveHistoryProps extends React.HTMLAttributes<HTMLDivElement> {
   moves: Move[];
   onMoveClick?: (moveIndex: number) => void;
   currentMoveIndex?: number;
 }
 
-export const MoveHistory: React.FC<MoveHistoryProps> = ({
-  moves,
-  onMoveClick,
-  currentMoveIndex = -1,
-}) => {
-  const getMoveNumber = (index: number) => Math.floor(index / 2) + 1;
-  const isWhiteMove = (index: number) => index % 2 === 0;
+const MoveHistory = React.forwardRef<HTMLDivElement, MoveHistoryProps>(
+  ({ moves, onMoveClick, currentMoveIndex = -1, className, ...props }, ref) => {
+    const getMoveNumber = (index: number) => Math.floor(index / 2) + 1;
+    const isWhiteMove = (index: number) => index % 2 === 0;
 
-  return (
-    <div
-      style={{
-        fontFamily: "monospace",
-        marginTop: "1rem",
-        maxHeight: "200px",
-        overflowY: "auto",
-        padding: "0.5rem",
-      }}
-    >
-      {moves.map((move, index) => {
-        const moveNumber = getMoveNumber(index);
-        const isStart = isWhiteMove(index);
+    return (
+      <div
+        ref={ref}
+        className={cn("font-mono mt-4 max-h-48 overflow-y-auto p-2", className)}
+        {...props}
+      >
+        {moves.map((move, index) => {
+          const moveNumber = getMoveNumber(index);
+          const isStart = isWhiteMove(index);
 
-        return (
-          <React.Fragment key={index}>
-            {isStart && (
-              <span style={{ marginRight: "8px", color: "#666" }}>
-                {moveNumber}.
+          return (
+            <React.Fragment key={index}>
+              {isStart && (
+                <span className="mr-2 text-gray-500">{moveNumber}.</span>
+              )}
+              <span
+                onClick={() => onMoveClick?.(index)}
+                className={cn(
+                  "mr-2 inline-block px-1 rounded",
+                  onMoveClick && "cursor-pointer",
+                  currentMoveIndex === index && "bg-gray-200",
+                  "hover:bg-yellow-100"
+                )}
+              >
+                {move.san}
               </span>
-            )}
-            <span
-              onClick={() => onMoveClick?.(index)}
-              style={{
-                cursor: onMoveClick ? "pointer" : "default",
-                marginRight: "8px",
-                backgroundColor:
-                  currentMoveIndex === index ? "#e2e8f0" : "transparent",
-                padding: "2px 4px",
-                borderRadius: "4px",
-                display: "inline-block",
-              }}
-            >
-              {move.san}
-            </span>
-            {!isWhiteMove(index) && <span style={{ marginRight: "8px" }} />}
-          </React.Fragment>
-        );
-      })}
-    </div>
-  );
-};
+              {!isWhiteMove(index) && <span className="mr-2" />}
+            </React.Fragment>
+          );
+        })}
+      </div>
+    );
+  }
+);
+
+MoveHistory.displayName = "MoveHistory";
+
+export { MoveHistory };
+export type { MoveHistoryProps };

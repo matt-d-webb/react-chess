@@ -12,6 +12,20 @@ import type { Key } from "chessground/types";
 import type { ChessboardProps, ChessboardRef } from "./types";
 import { MoveHistory } from "./components/MoveHistory";
 import { Navigation } from "./components/Navigation";
+import { cn } from "@/lib/utils";
+
+const CHESSGROUND_PROPS = [
+  "draggable",
+  "movable",
+  "premovable",
+  "predroppable",
+  "events",
+  "drawable",
+  "highlight",
+  "animation",
+  "fen",
+  "orientation",
+] as const;
 
 export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
   (
@@ -25,6 +39,8 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
       showMoveHistory = false,
       showNavigation = false,
       onPositionChange,
+      className,
+      ...props
     },
     ref
   ) => {
@@ -33,6 +49,19 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
     const gameRef = useRef<Chess>(new Chess(fen === "start" ? undefined : fen));
     const [moveHistory, setMoveHistory] = useState<Move[]>([]);
     const [currentMoveIndex, setCurrentMoveIndex] = useState<number>(-1);
+
+    const divProps: Record<string, unknown> = {};
+    const chessgroundProps: Record<string, unknown> = {};
+
+    Object.entries(props).forEach(([key, value]) => {
+      if (
+        CHESSGROUND_PROPS.includes(key as (typeof CHESSGROUND_PROPS)[number])
+      ) {
+        chessgroundProps[key] = value;
+      } else {
+        divProps[key] = value;
+      }
+    });
 
     useImperativeHandle(
       ref,
@@ -95,6 +124,7 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
             }
           },
         },
+        ...chessgroundProps, // Spread Chessground-specific props
       });
 
       apiRef.current = cg;
@@ -138,14 +168,14 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
     const handleLast = () => navigateToMove(moveHistory.length - 1);
 
     return (
-      <div className="chess-board-container">
+      <div className={cn("flex flex-col space-y-4", className)} {...divProps}>
         <div
           ref={boardRef}
-          className="chess-board"
+          data-chessboard
+          className="relative"
           style={{
             width: typeof width === "number" ? `${width}px` : width,
             height: typeof height === "number" ? `${height}px` : height,
-            position: "relative",
           }}
         />
         {showMoveHistory && (

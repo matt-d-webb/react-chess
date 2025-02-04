@@ -1,7 +1,11 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import { MoveHistory } from "../components/MoveHistory";
-import { Move } from "chess.js";
+import type { Move } from "chess.js";
+
+jest.mock("@/lib/utils", () => ({
+  cn: (...inputs: any) => inputs.filter(Boolean).join(" "),
+}));
 
 describe("MoveHistory", () => {
   const mockMoves: Partial<Move>[] = [
@@ -47,6 +51,41 @@ describe("MoveHistory", () => {
     );
 
     const moveElement = getByText("e5");
-    expect(moveElement).toHaveStyle({ backgroundColor: "#e2e8f0" });
+    expect(moveElement.className).toContain("bg-gray-200");
+  });
+
+  it("applies custom className", () => {
+    const customClass = "test-class";
+    const { container } = render(
+      <MoveHistory
+        moves={mockMoves as Move[]}
+        currentMoveIndex={-1}
+        className={customClass}
+      />
+    );
+
+    const rootElement = container.firstChild as HTMLElement;
+    expect(rootElement.className).toContain(customClass);
+  });
+
+  it("adds pointer cursor when onMoveClick is provided", () => {
+    const onMoveClick = jest.fn();
+    const { getByText } = render(
+      <MoveHistory
+        moves={mockMoves as Move[]}
+        onMoveClick={onMoveClick}
+        currentMoveIndex={-1}
+      />
+    );
+
+    const moveElement = getByText("e4");
+    expect(moveElement.className).toContain("cursor-pointer");
+  });
+
+  it("forwards ref correctly", () => {
+    const ref = React.createRef<HTMLDivElement>();
+    render(<MoveHistory moves={mockMoves as Move[]} ref={ref} />);
+
+    expect(ref.current).toBeInstanceOf(HTMLDivElement);
   });
 });
