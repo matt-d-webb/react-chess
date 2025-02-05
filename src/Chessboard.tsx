@@ -321,39 +321,55 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
     const handleLast = () => navigateToMove(moveHistory.length - 1);
 
     return (
-      <div className={cn("flex flex-col space-y-4", className)} {...divProps}>
-        <div
-          ref={boardRef}
-          data-chessboard
-          className="relative"
-          style={{
-            width: typeof width === "number" ? `${width}px` : width,
-            height: typeof height === "number" ? `${height}px` : height,
-          }}
-        />
-        {showMoveHistory && (
-          <MoveHistory
-            moves={moveHistory}
-            onMoveClick={navigateToMove}
-            currentMoveIndex={currentMoveIndex}
-            annotations={pgnMetadata.annotations}
-            comments={pgnMetadata.comments}
-            variations={pgnMetadata.variations}
-            clockTimes={pgnMetadata.clockTimes}
-            evaluations={pgnMetadata.evaluations}
-            ravs={pgnMetadata.ravs}
-            headers={pgnMetadata.headers}
+      <div className={cn("flex flex-col", className)} {...divProps}>
+        <div className="flex gap-4">
+          {/* Board Section */}
+          <div
+            ref={boardRef}
+            data-chessboard
+            style={{
+              width: typeof width === "number" ? `${width}px` : width,
+              height: typeof height === "number" ? `${height}px` : height,
+            }}
+            className="relative"
           />
-        )}
+
+          {/* Move History Section */}
+          {showMoveHistory && (
+            <div
+              style={{
+                height: typeof height === "number" ? `${height}px` : height,
+                width: "300px", // You can adjust this width
+              }}
+            >
+              <MoveHistory
+                moves={moveHistory}
+                onMoveClick={navigateToMove}
+                currentMoveIndex={currentMoveIndex}
+                annotations={pgnMetadata.annotations}
+                comments={pgnMetadata.comments}
+                variations={pgnMetadata.variations}
+                clockTimes={pgnMetadata.clockTimes}
+                evaluations={pgnMetadata.evaluations}
+                ravs={pgnMetadata.ravs}
+                headers={pgnMetadata.headers}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Navigation Section - Full Width */}
         {showNavigation && (
-          <Navigation
-            onFirst={handleFirst}
-            onPrevious={handlePrevious}
-            onNext={handleNext}
-            onLast={handleLast}
-            canGoBackward={currentMoveIndex > -1}
-            canGoForward={currentMoveIndex < moveHistory.length - 1}
-          />
+          <div className="mt-4">
+            <Navigation
+              onFirst={handleFirst}
+              onPrevious={handlePrevious}
+              onNext={handleNext}
+              onLast={handleLast}
+              canGoBackward={currentMoveIndex > -1}
+              canGoForward={currentMoveIndex < moveHistory.length - 1}
+            />
+          </div>
         )}
       </div>
     );

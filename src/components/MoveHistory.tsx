@@ -26,6 +26,37 @@ interface MoveHistoryProps extends React.HTMLAttributes<HTMLDivElement> {
   };
 }
 
+// NAG to symbol mapping
+const nagMap: Record<string, string> = {
+  $1: "!",
+  $2: "?",
+  $3: "!!",
+  $4: "??",
+  $5: "!?",
+  $6: "?!",
+  $10: "=",
+  $13: "∞",
+  $14: "±",
+  $15: "∓",
+  $16: "±",
+  $17: "∓",
+  $18: "+−",
+  $19: "−+",
+  $20: "+--",
+  $21: "--+",
+  $22: "⨁",
+  $23: "⨁",
+  $32: "⟳",
+  $36: "↑",
+  $40: "→",
+  $44: "=∞",
+  $132: "⊕",
+  $138: "⨂",
+  $140: "∆",
+  $142: "⌓",
+  $146: "N",
+};
+
 const MoveHistory = React.forwardRef<HTMLDivElement, MoveHistoryProps>(
   (
     {
@@ -47,25 +78,27 @@ const MoveHistory = React.forwardRef<HTMLDivElement, MoveHistoryProps>(
     const getMoveNumber = (index: number) => Math.floor(index / 2) + 1;
     const isWhiteMove = (index: number) => index % 2 === 0;
 
+    const getAnnotationSymbol = (nag: string) => nagMap[nag] || nag;
+
     return (
       <div
         ref={ref}
         className={cn(
-          "font-mono mt-4 overflow-y-auto flex flex-col max-w-[400px]",
+          "h-full flex flex-col border rounded-lg bg-white",
           className
         )}
         {...props}
       >
         {/* Game Metadata Section */}
         {Object.keys(headers).length > 0 && (
-          <div className="mb-4 p-3 bg-gray-50 rounded-lg text-sm">
+          <div className="flex-none p-3 bg-gray-50 rounded-t-lg text-sm border-b">
             {headers.Event && (
-              <div className="font-semibold text-base mb-2">
+              <div className="font-semibold text-base">
                 {headers.Event}
-                {headers.Round && ` (${headers.Round})`}
+                {headers.Round && ` • Round ${headers.Round}`}
               </div>
             )}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 mt-2">
               <div>
                 <div className="font-semibold">White</div>
                 <div>{headers.White || "Unknown"}</div>
@@ -81,7 +114,7 @@ const MoveHistory = React.forwardRef<HTMLDivElement, MoveHistoryProps>(
                 )}
               </div>
             </div>
-            <div className="mt-2 flex flex-col text-gray-600">
+            <div className="mt-2 flex flex-wrap gap-2 text-gray-600 text-sm">
               {headers.Date && <div>{headers.Date}</div>}
               {headers.Site && <div>{headers.Site}</div>}
               {headers.Result && <div>Result: {headers.Result}</div>}
@@ -91,56 +124,44 @@ const MoveHistory = React.forwardRef<HTMLDivElement, MoveHistoryProps>(
         )}
 
         {/* Moves Section */}
-        <div className="p-2">
-          {moves.map((move, index) => {
-            const moveNumber = getMoveNumber(index);
-            const isStart = isWhiteMove(index);
-            const annotation = annotations[index];
-            const comment = comments[index];
-            const variation = variations[index];
-            const clockTime = clockTimes[index];
-            const evaluation = evaluations[index];
-            const moveRavs = ravs[index];
+        <div className="flex-1 overflow-y-auto p-3 font-mono text-sm">
+          <div className="flex flex-wrap">
+            {moves.map((move, index) => {
+              const moveNumber = getMoveNumber(index);
+              const isStart = isWhiteMove(index);
+              const annotation = annotations[index];
+              const comment = comments[index];
 
-            return (
-              <React.Fragment key={index}>
-                {isStart && (
-                  <span className="mr-2 text-gray-500">{moveNumber}.</span>
-                )}
-                <span
-                  onClick={() => onMoveClick?.(index)}
-                  className={cn(
-                    "mr-2 inline-block px-1 rounded",
-                    onMoveClick && "cursor-pointer",
-                    currentMoveIndex === index && "bg-gray-200",
-                    "hover:bg-yellow-100"
+              return (
+                <React.Fragment key={index}>
+                  {isStart && (
+                    <span className="text-gray-500 mr-2">{moveNumber}.</span>
                   )}
-                >
-                  {move.san}
-                  {annotation && (
-                    <span className="text-blue-600 ml-0.5">{annotation}</span>
-                  )}
-                  {clockTime && (
-                    <span className="text-green-600 ml-1 text-sm">
-                      {`[${clockTime}]`}
+                  <span
+                    onClick={() => onMoveClick?.(index)}
+                    className={cn(
+                      "mr-2 px-1 rounded cursor-pointer",
+                      currentMoveIndex === index && "bg-gray-200",
+                      "hover:bg-yellow-100"
+                    )}
+                  >
+                    {move.san}
+                    {annotation && (
+                      <span className="text-green-500 ml-0.5">
+                        {getAnnotationSymbol(annotation)}
+                      </span>
+                    )}
+                  </span>
+                  {comment && (
+                    <span className="text-gray-600 text-xs italic mr-2">
+                      {`${comment}`}
                     </span>
                   )}
-                </span>
-                {comment && (
-                  <span className="text-gray-600 italic mr-2">
-                    {`{${comment}}`}
-                  </span>
-                )}
-                {variation &&
-                  variation.map((var_moves, varIdx) => (
-                    <div key={varIdx} className="ml-4 text-gray-600">
-                      ({var_moves})
-                    </div>
-                  ))}
-                {!isWhiteMove(index) && <span className="mr-2" />}
-              </React.Fragment>
-            );
-          })}
+                  {!isWhiteMove(index) && <span className="mr-2" />}
+                </React.Fragment>
+              );
+            })}
+          </div>
         </div>
       </div>
     );
