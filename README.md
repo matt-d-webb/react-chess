@@ -76,6 +76,7 @@ function App() {
     <Chessboard
       pgn={pgn}
       className="bg-gray-50 p-4 rounded-lg"
+      theme="blue"
       showMoveHistory={true}
       showNavigation={true}
       onPositionChange={(fen, moves) => {
@@ -127,6 +128,7 @@ function App() {
 | `width`            | `string \| number`                     | `'400px'`   | Width of the chess board                                                       |
 | `height`           | `string \| number`                     | `'400px'`   | Height of the chess board                                                      |
 | `className`        | `string`                               | `undefined` | Custom Tailwind classes for the container                                      |
+| `theme`            | `string`                               | `'brown'`   | "blue", "green", "gray, "brown"                                                |
 | `fen`              | `string`                               | `'start'`   | FEN string representing the board position. Use `'start'` for initial position |
 | `orientation`      | `'white' \| 'black'`                   | `'white'`   | Which side of the board to show at the bottom                                  |
 | `onMove`           | `(from: string, to: string) => void`   | `undefined` | Callback fired when a piece is moved                                           |

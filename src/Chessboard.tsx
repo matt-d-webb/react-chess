@@ -9,10 +9,10 @@ import { Chessground } from "chessground";
 import { Chess, Move } from "chess.js";
 import type { Api } from "chessground/api";
 import type { Key } from "chessground/types";
-import type { ChessboardProps, ChessboardRef } from "./types";
+import type { ChessboardProps, ChessboardRef, PGNMetadata } from "./types";
 import { MoveHistory } from "./components/MoveHistory";
 import { Navigation } from "./components/Navigation";
-import { cn } from "@/lib/utils";
+import { cn, parsePGNAnnotations } from "@/lib/utils";
 
 const CHESSGROUND_PROPS = [
   "draggable",
@@ -32,6 +32,7 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
     {
       width = "400px",
       height = "400px",
+      theme = "brown",
       fen = "start",
       orientation = "white",
       onMove,
@@ -49,6 +50,15 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
     const gameRef = useRef<Chess>(new Chess(fen === "start" ? undefined : fen));
     const [moveHistory, setMoveHistory] = useState<Move[]>([]);
     const [currentMoveIndex, setCurrentMoveIndex] = useState<number>(-1);
+    const [pgnMetadata, setPgnMetadata] = useState<PGNMetadata>({
+      annotations: {},
+      comments: {},
+      variations: {},
+      clockTimes: {},
+      evaluations: {},
+      ravs: {},
+      headers: {},
+    });
 
     const divProps: Record<string, unknown> = {};
     const chessgroundProps: Record<string, unknown> = {};
@@ -75,6 +85,10 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
     useEffect(() => {
       if (pgn && gameRef.current) {
         try {
+          // Parse PGN annotations before loading into chess.js
+          const metadata = parsePGNAnnotations(pgn);
+          setPgnMetadata(metadata);
+
           gameRef.current.loadPgn(pgn);
           const moves = gameRef.current.history({ verbose: true });
           setMoveHistory(moves);
@@ -124,7 +138,7 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
             }
           },
         },
-        ...chessgroundProps, // Spread Chessground-specific props
+        ...chessgroundProps,
       });
 
       apiRef.current = cg;
@@ -168,32 +182,55 @@ export const Chessboard = forwardRef<ChessboardRef, ChessboardProps>(
     const handleLast = () => navigateToMove(moveHistory.length - 1);
 
     return (
-      <div className={cn("flex flex-col space-y-4", className)} {...divProps}>
-        <div
-          ref={boardRef}
-          data-chessboard
-          className="relative"
-          style={{
-            width: typeof width === "number" ? `${width}px` : width,
-            height: typeof height === "number" ? `${height}px` : height,
-          }}
-        />
-        {showMoveHistory && (
-          <MoveHistory
-            moves={moveHistory}
-            onMoveClick={navigateToMove}
-            currentMoveIndex={currentMoveIndex}
+      <div className={cn("flex flex-col", className)} {...divProps}>
+        <div className="flex gap-4">
+          {/* Board Section */}
+          <div
+            ref={boardRef}
+            data-chessboard
+            className={cn("relative", `${theme}`)}
+            style={{
+              width: typeof width === "number" ? `${width}px` : width,
+              height: typeof height === "number" ? `${height}px` : height,
+            }}
           />
-        )}
+
+          {/* Move History Section */}
+          {showMoveHistory && (
+            <div
+              style={{
+                height: typeof height === "number" ? `${height}px` : height,
+                width: "300px", // You can adjust this width
+              }}
+            >
+              <MoveHistory
+                moves={moveHistory}
+                onMoveClick={navigateToMove}
+                currentMoveIndex={currentMoveIndex}
+                annotations={pgnMetadata.annotations}
+                comments={pgnMetadata.comments}
+                variations={pgnMetadata.variations}
+                clockTimes={pgnMetadata.clockTimes}
+                evaluations={pgnMetadata.evaluations}
+                ravs={pgnMetadata.ravs}
+                headers={pgnMetadata.headers}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Navigation Section - Full Width */}
         {showNavigation && (
-          <Navigation
-            onFirst={handleFirst}
-            onPrevious={handlePrevious}
-            onNext={handleNext}
-            onLast={handleLast}
-            canGoBackward={currentMoveIndex > -1}
-            canGoForward={currentMoveIndex < moveHistory.length - 1}
-          />
+          <div className="mt-4">
+            <Navigation
+              onFirst={handleFirst}
+              onPrevious={handlePrevious}
+              onNext={handleNext}
+              onLast={handleLast}
+              canGoBackward={currentMoveIndex > -1}
+              canGoForward={currentMoveIndex < moveHistory.length - 1}
+            />
+          </div>
         )}
       </div>
     );
