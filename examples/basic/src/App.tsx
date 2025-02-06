@@ -3,6 +3,7 @@ import { Chessboard } from "react-chess";
 import "../../../dist/assets/chessground.base.css";
 import "../../../dist/assets/chessground.brown.css";
 import "../../../dist/assets/chessground.cburnett.css";
+import "../../../dist/assets/chessboard.theme.css";
 
 const App = () => {
   const samplePgn = `[Event "Third Rosenwald Trophy"]
@@ -38,6 +39,7 @@ bishop.} 18. Bxb6 {White grabs material but it's a fatal mistake.} Bxc4+ 19. Kg1
       <Chessboard
         width={400}
         height={400}
+        theme="gray"
         className="p-4 shadow-2xl rounded-2xl"
         pgn={samplePgn}
         showMoveHistory={true}

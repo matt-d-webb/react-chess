@@ -35,6 +35,12 @@ export default {
           dest: "dist/assets",
         },
       ],
+      targets: [
+        {
+          src: "src/styles/chessboard.*",
+          dest: "dist/assets",
+        },
+      ],
     }),
   ],
 };
