@@ -12,8 +12,16 @@ A React chess component powered by [chessground](https://github.com/lichess-org/
 - 🎨 Customizable styling with Tailwind CSS
 - 💅 Built-in class name customization
 
+### Basic
+
 <p align="center">
   <img width="200px" src="/examples/basic/images/example-game.png" />
+</p>
+
+### Notation
+
+<p align="center">
+  <img width="200px" src="/examples/basic/images/example-game-notation.png" />
 </p>
 
 ## Installation
