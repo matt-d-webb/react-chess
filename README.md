@@ -13,12 +13,10 @@ A React chess component powered by [chessground](https://github.com/lichess-org/
 - 💅 Built-in class name customization
 
 <p align="center">
-  <span>Basic<span>
   <img width="200px" src="/examples/basic/images/example-game.png" />
 </p>
 
 <p align="center">
-  <span>Notation<span>
   <img width="400px" src="/examples/basic/images/example-game-notation.png" />
 </p>
 
