@@ -85,7 +85,14 @@ export const Board = React.forwardRef<HTMLDivElement, BoardProps>(
       apiRef.current = cg;
       ctx?.setApi(cg);
 
+      // Chessground calculates piece positions from container dimensions at
+      // init time. If CSS hasn't fully applied yet (common on first render),
+      // pieces can be misaligned. Redrawing after the browser completes
+      // layout ensures correct positioning.
+      const rafId = requestAnimationFrame(() => cg.redrawAll());
+
       return () => {
+        cancelAnimationFrame(rafId);
         cg.destroy();
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
