@@ -1,0 +1,79 @@
+{
+  "name": "@mdwebb/react-chess",
+  "version": "2.0.0",
+  "description": "Feature-rich React chess board component with chessground and chess.js",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./styles": "./dist/assets/index.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src --ext .ts,.tsx"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "chess.js": "^1.0.0-beta.6",
+    "chessground": "^8.3.7",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.474.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.7",
+    "@babel/preset-env": "^7.26.7",
+    "@babel/preset-react": "^7.26.3",
+    "@babel/preset-typescript": "^7.26.0",
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-typescript": "^8.5.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@types/chess.js": "^0.13.4",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.0.0",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "postcss": "^8.4.31",
+    "rollup": "^2.79.1",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-dts": "^4.2.3",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.2",
+    "ts-jest": "^29.2.5",
+    "tslib": "^2.6.2",
+    "typescript": "^5.2.2"
+  },
+  "keywords": [
+    "react",
+    "chess",
+    "chessboard",
+    "chessground",
+    "chess.js",
+    "typescript",
+    "pgn",
+    "fen"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matt-d-webb/react-chess.git"
+  },
+  "author": "Matt Webb <matt@chesscentre.online>",
+  "license": "MIT"
+}
