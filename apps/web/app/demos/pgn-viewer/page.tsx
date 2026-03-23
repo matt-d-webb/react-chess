@@ -95,7 +95,7 @@ export default function PGNViewerDemo() {
   const game = SAMPLE_PGNS[selectedGame];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+    <div className="mx-auto max-w-6xl overflow-x-hidden px-4 py-8 sm:px-6 sm:py-10">
       <div className="mb-7">
         <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">PGN Viewer</h1>
         <p className="max-w-xl text-(--fg-secondary)">
@@ -108,7 +108,7 @@ export default function PGNViewerDemo() {
       <Card className="mb-6" size="sm">
         <CardContent>
           <div className="flex flex-wrap items-end gap-4">
-            <div className="min-w-50 flex-1">
+            <div className="min-w-0 flex-1 sm:min-w-50">
               <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Game</label>
               <select
                 className="w-full rounded-lg border border-border bg-(--bg-secondary) px-3 py-2 text-sm text-(--fg)"

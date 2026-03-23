@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@mdwebb/react-chess/styles";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "React Chess - Feature-Rich Chess Board Component",
@@ -18,13 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <Nav />
-        <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
-        <footer className="border-t border-border px-6 py-8 text-center text-[0.8125rem] text-(--muted-text)">
-          Built with chessground &amp; chess.js
-        </footer>
+        <ThemeProvider>
+          <Nav />
+          <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
+          <footer className="border-t border-border px-6 py-8 text-center text-[0.8125rem] text-(--muted-text)">
+            Built with chessground &amp; chess.js
+          </footer>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -21,9 +21,10 @@ export default function BasicDemo() {
   const [lastMove, setLastMove] = useState("");
   const maxSize = useMaxBoardSize();
   const effectiveSize = Math.min(boardSize, maxSize);
+  const isMobile = maxSize < 500;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+    <div className="mx-auto max-w-6xl overflow-x-hidden px-4 py-8 sm:px-6 sm:py-10">
       <FadeIn>
         <div className="mb-7">
           <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Basic Board</h1>
@@ -46,7 +47,7 @@ export default function BasicDemo() {
             showCoordinates={showCoords}
             showMoveHistory={layout === "horizontal"}
             showNavigation={layout !== "board-only"}
-            layout={layout}
+            layout={isMobile && layout === "horizontal" ? "vertical" : layout}
             autoPromoteToQueen={false}
             onMove={(from, to, move) => {
               setFen(move.after);
@@ -67,7 +68,7 @@ export default function BasicDemo() {
         </div>
 
         {/* Controls panel */}
-        <div className="min-w-70 flex-1">
+        <div className="min-w-0 flex-1 sm:min-w-70">
           {/* Stats */}
           <Card className="mb-4" size="sm">
             <CardContent>

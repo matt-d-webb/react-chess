@@ -2,29 +2,29 @@
 
 import { ChessProvider, Board } from "@mdwebb/react-chess";
 import { CodeBlock } from "@/components/CodeBlock";
-import { FadeIn, Stagger, StaggerItem, motion } from "@/components/Motion";
+import { FadeIn, Stagger, StaggerItem } from "@/components/Motion";
+import { NetworkBackground } from "@/components/NetworkBackground";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { useMaxBoardSize } from "@/hooks/useMaxBoardSize";
 
 const features = [
-  { icon: "🎨", title: "Custom Themes", desc: "4 presets or design your own with live color pickers" },
-  { icon: "📋", title: "PGN Support", desc: "Annotations, NAG symbols, comments, and metadata" },
-  { icon: "🧩", title: "Compound API", desc: "Compose Board, MoveHistory, Navigation independently" },
-  { icon: "♛", title: "Promotion UI", desc: "Visual piece selection — no more auto-queen" },
-  { icon: "⌨️", title: "Keyboard Nav", desc: "Arrow keys and Home/End to step through moves" },
-  { icon: "⚡", title: "Callbacks", desc: "onCheck, onGameOver, onIllegalMove, onPromotion" },
-  { icon: "🔄", title: "Board Flip", desc: "Toggle orientation via button, prop, or ref" },
-  { icon: "🔒", title: "TypeScript", desc: "Every prop, callback, and ref fully typed" },
+  { title: "custom_themes", desc: "4 presets or build your own with live pickers" },
+  { title: "pgn_support", desc: "Annotations, NAG symbols, comments, metadata" },
+  { title: "compound_api", desc: "Compose Board, MoveHistory, Navigation" },
+  { title: "promotion_ui", desc: "Visual piece selection dialog" },
+  { title: "keyboard_nav", desc: "Arrow keys to step through moves" },
+  { title: "callbacks", desc: "onCheck, onGameOver, onIllegalMove" },
+  { title: "board_flip", desc: "Toggle via button, prop, or ref" },
+  { title: "typescript", desc: "Every prop, callback, and ref typed" },
 ];
 
 const demos = [
-  { title: "Basic Board", desc: "Drag-and-drop, flip, coordinates", href: "/demos/basic", icon: "♟" },
-  { title: "PGN Viewer", desc: "Famous games with annotations", href: "/demos/pgn-viewer", icon: "📖" },
-  { title: "Themes", desc: "Live color pickers", href: "/demos/theme-customizer", icon: "🎨" },
-  { title: "Compound", desc: "Custom layouts", href: "/demos/compound", icon: "🧩" },
-  { title: "Callbacks", desc: "Real-time events", href: "/demos/callbacks", icon: "⚡" },
+  { title: "basic", desc: "Drag-and-drop, flip, coordinates", href: "/demos/basic" },
+  { title: "pgn_viewer", desc: "Famous games with annotations", href: "/demos/pgn-viewer" },
+  { title: "themes", desc: "Live color customization", href: "/demos/theme-customizer" },
+  { title: "compound", desc: "Custom component layouts", href: "/demos/compound" },
+  { title: "callbacks", desc: "Real-time event logging", href: "/demos/callbacks" },
 ];
 
 const quickStart = `import { Chessboard } from "@mdwebb/react-chess";
@@ -38,12 +38,8 @@ function App() {
       theme="brown"
       showMoveHistory={true}
       showNavigation={true}
-      showBoardControls={true}
       onMove={(from, to, move) => {
         console.log(move.san);
-      }}
-      onGameOver={(result) => {
-        alert(result.reason);
       }}
     />
   );
@@ -51,131 +47,124 @@ function App() {
 
 export default function Home() {
   const maxSize = useMaxBoardSize();
-  const heroSize = Math.min(400, maxSize);
+  const heroSize = Math.min(380, maxSize);
 
   return (
     <div>
       {/* Hero */}
-      <section className="relative overflow-hidden px-4 pt-14 pb-12 text-center sm:px-6">
-        <div className="pointer-events-none absolute top-[-40%] left-1/2 h-[700px] w-[700px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(192,200,212,0.06)_0%,transparent_70%)]" />
+      <section className="bg-grid scanlines relative overflow-hidden px-4 pt-16 pb-16 text-center sm:px-6">
+        {/* Network background */}
+        <div className="pointer-events-none absolute inset-0 opacity-50">
+          <NetworkBackground />
+        </div>
 
-        <FadeIn variant="fade-up" style={{ position: "relative" }}>
-          <Badge variant="outline" className="mb-3 inline-flex">
-            v2.0 — Compound Components + Custom Themes
-          </Badge>
-        </FadeIn>
+        <div className="relative">
+          <FadeIn variant="fade-up">
+            <div className="mb-6 inline-block">
+              <Badge variant="outline" className="border-(--accent-site)/20 font-mono text-xs tracking-widest text-(--accent-site) uppercase">
+                v2.0 // compound + themes
+              </Badge>
+            </div>
+          </FadeIn>
 
-        <FadeIn variant="fade-up" delay={0.05}>
-          <h1 className="mb-2 bg-gradient-to-br from-(--fg) to-(--accent-site) bg-clip-text text-[clamp(2.5rem,6vw,3.25rem)] leading-none font-black tracking-tighter text-transparent">
-            React Chess
-          </h1>
-        </FadeIn>
+          <FadeIn variant="fade-up" delay={0.05}>
+            <h1 className="mb-2 text-[clamp(2rem,5vw,3rem)] leading-none font-black tracking-tight text-(--accent-site)">
+              react-chess
+            </h1>
+          </FadeIn>
 
-        <FadeIn variant="fade-up" delay={0.1}>
-          <p className="mx-auto mb-8 max-w-lg text-base text-(--fg-secondary) sm:text-lg">
-            A feature-rich, highly configurable chess board component. Built on
-            chessground &amp; chess.js.
-          </p>
-        </FadeIn>
+          <FadeIn variant="fade-up" delay={0.1}>
+            <p className="mx-auto mb-10 max-w-md text-sm leading-relaxed text-(--fg-secondary)">
+              Feature-rich chess board component for React.
+              <br />
+              Built on chessground &amp; chess.js.
+            </p>
+          </FadeIn>
 
-        <FadeIn variant="scale-in" delay={0.15}>
-          <div className="inline-block">
-            <motion.div
-              animate={{
-                boxShadow: [
-                  "0 0 20px rgba(192,200,212,0.05)",
-                  "0 0 40px rgba(192,200,212,0.12)",
-                  "0 0 20px rgba(192,200,212,0.05)",
-                ],
-              }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="inline-block rounded-lg"
-            >
-              <ChessProvider theme="brown" autoPromoteToQueen={true}>
-                <Board width={heroSize} height={heroSize} />
-              </ChessProvider>
-            </motion.div>
+          {/* Board - NO animation wrappers */}
+          <div className="glow-border mb-10 inline-block rounded-md border border-border">
+            <ChessProvider theme="brown" autoPromoteToQueen={true}>
+              <Board width={heroSize} height={heroSize} />
+            </ChessProvider>
           </div>
-        </FadeIn>
 
-        <FadeIn variant="fade-up" delay={0.25}>
-          <div className="mt-6 flex justify-center gap-2.5">
-            <a href="/demos/basic">
-              <Button>Try the Demos</Button>
-            </a>
-            <a href="https://github.com/matt-d-webb/react-chess">
-              <Button variant="outline">GitHub</Button>
-            </a>
-          </div>
-        </FadeIn>
+          <FadeIn variant="fade-up" delay={0.2}>
+            <div className="flex justify-center gap-3">
+              <a href="/demos/basic">
+                <Button size="lg" className="font-mono text-xs tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_20px_var(--accent-glow)]">
+                  ./demos
+                </Button>
+              </a>
+              <a href="https://github.com/matt-d-webb/react-chess">
+                <Button variant="outline" size="lg" className="font-mono text-xs tracking-wider uppercase transition-all hover:-translate-y-0.5 hover:border-(--accent-site) hover:text-(--accent-site)">
+                  github
+                </Button>
+              </a>
+            </div>
+          </FadeIn>
+        </div>
       </section>
 
       {/* Quick Start */}
-      <section className="mx-auto max-w-[46rem] px-4 pt-12 pb-10 sm:px-6">
-        <FadeIn className="mb-5 text-center">
-          <h2 className="mb-1 text-2xl font-extrabold tracking-tight">Quick Start</h2>
-          <p className="text-(--fg-secondary)">Install and render a board in seconds</p>
+      <section className="mx-auto max-w-[46rem] px-4 pt-16 pb-12 sm:px-6">
+        <FadeIn className="mb-6 text-center">
+          <h2 className="mb-1 text-lg font-bold tracking-tight text-(--accent-site)">$ quick-start</h2>
+          <p className="text-xs text-(--fg-secondary)">Install and render in seconds</p>
         </FadeIn>
 
         <FadeIn delay={0.1} className="mb-3">
-          <div className="code-block" style={{ borderColor: "rgba(192,200,212,0.2)" }}>
+          <div className="code-block glow-border">
             <div className="code-block__header">
-              <span className="code-block__lang">Terminal</span>
+              <span className="code-block__lang">terminal</span>
             </div>
             <pre className="code-block__fallback" style={{ padding: "0.75rem 1.25rem" }}>
-              <code className="text-(--accent-site)">npm install @mdwebb/react-chess</code>
+              <code className="text-(--accent-site)">$ npm install @mdwebb/react-chess</code>
             </pre>
           </div>
         </FadeIn>
 
         <FadeIn delay={0.15}>
-          <CodeBlock code={quickStart} language="tsx" title="App.tsx" />
+          <CodeBlock code={quickStart} language="tsx" title="app.tsx" />
         </FadeIn>
       </section>
 
       {/* Features */}
-      <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
-        <FadeIn className="mb-6 text-center">
-          <h2 className="mb-1 text-2xl font-extrabold tracking-tight">Features</h2>
-          <p className="text-(--fg-secondary)">Everything you need for chess in React</p>
+      <section className="bg-grid mx-auto max-w-5xl px-4 py-16 sm:px-6">
+        <FadeIn className="mb-8 text-center">
+          <h2 className="mb-1 text-lg font-bold tracking-tight text-(--accent-site)">$ features --list</h2>
+          <p className="text-xs text-(--fg-secondary)">Everything included</p>
         </FadeIn>
 
-        <Stagger className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-2.5">
-          {features.map(({ icon, title, desc }) => (
+        <Stagger className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-2">
+          {features.map(({ title, desc }) => (
             <StaggerItem key={title}>
-              <Card className="h-full" size="sm">
-                <CardContent>
-                  <div className="mb-1.5 text-xl">{icon}</div>
-                  <h3 className="mb-0.5 text-sm font-bold">{title}</h3>
-                  <p className="text-xs leading-relaxed text-(--fg-secondary)">{desc}</p>
-                </CardContent>
-              </Card>
+              <div className="glow-border rounded-md border border-border/50 bg-(--card-bg) px-4 py-3 transition-all hover:border-(--accent-site)/20 hover:bg-(--card-bg-hover)">
+                <h3 className="mb-1 text-xs font-bold text-(--accent-site)">{title}</h3>
+                <p className="text-[0.7rem] leading-relaxed text-(--fg-secondary)">{desc}</p>
+              </div>
             </StaggerItem>
           ))}
         </Stagger>
       </section>
 
       {/* Demos */}
-      <section className="mx-auto max-w-5xl px-4 pt-10 pb-12 sm:px-6">
-        <FadeIn className="mb-6 text-center">
-          <h2 className="mb-1 text-2xl font-extrabold tracking-tight">Interactive Demos</h2>
-          <p className="text-(--fg-secondary)">Explore every feature live</p>
+      <section className="mx-auto max-w-5xl px-4 pt-10 pb-16 sm:px-6">
+        <FadeIn className="mb-8 text-center">
+          <h2 className="mb-1 text-lg font-bold tracking-tight text-(--accent-site)">$ demos --interactive</h2>
+          <p className="text-xs text-(--fg-secondary)">Explore every feature live</p>
         </FadeIn>
 
-        <Stagger className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2.5">
+        <Stagger className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2">
           {demos.map((demo) => (
             <StaggerItem key={demo.href}>
-              <a href={demo.href} className="block h-full no-underline">
-                <Card className="h-full transition-all hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(192,200,212,0.04)] hover:ring-[rgba(192,200,212,0.15)]" size="sm">
-                  <CardContent>
-                    <div className="mb-2 text-2xl">{demo.icon}</div>
-                    <h3 className="mb-0.5 text-sm font-bold text-(--fg)">
-                      {demo.title}
-                      <span className="ml-1.5 text-(--accent-site)">→</span>
-                    </h3>
-                    <p className="text-xs text-(--fg-secondary)">{demo.desc}</p>
-                  </CardContent>
-                </Card>
+              <a href={demo.href} className="group block h-full no-underline">
+                <div className="glow-border h-full rounded-md border border-border/50 bg-(--card-bg) px-4 py-3 transition-all hover:border-(--accent-site)/20 hover:bg-(--card-bg-hover)">
+                  <h3 className="mb-1 text-xs font-bold text-(--fg)">
+                    <span className="text-(--accent-site)">./</span>{demo.title}
+                    <span className="ml-1 inline-block text-(--accent-site) transition-transform group-hover:translate-x-0.5">→</span>
+                  </h3>
+                  <p className="text-[0.7rem] text-(--fg-secondary)">{demo.desc}</p>
+                </div>
               </a>
             </StaggerItem>
           ))}

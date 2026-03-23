@@ -81,7 +81,7 @@ export default function CallbacksDemo() {
   );
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+    <div className="mx-auto max-w-6xl overflow-x-hidden px-4 py-8 sm:px-6 sm:py-10">
       <div className="mb-7">
         <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Game Callbacks</h1>
         <p className="max-w-xl text-(--fg-secondary)">
@@ -171,7 +171,7 @@ export default function CallbacksDemo() {
         </div>
 
         {/* Event log */}
-        <div className="flex max-h-125 min-w-70 flex-1 flex-col">
+        <div className="flex max-h-125 min-w-0 flex-1 flex-col sm:min-w-70">
           <Card className="flex flex-1 flex-col overflow-hidden">
             <div className="flex items-center justify-between border-b border-border px-4 py-3">
               <span className="text-sm font-bold">

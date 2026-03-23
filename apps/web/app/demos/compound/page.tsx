@@ -74,7 +74,7 @@ export default function CompoundDemo() {
   const isMobile = maxSize < 500;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+    <div className="mx-auto max-w-6xl overflow-x-hidden px-4 py-8 sm:px-6 sm:py-10">
       <div className="mb-7">
         <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Compound Components</h1>
         <p className="max-w-xl text-(--fg-secondary)">
@@ -167,7 +167,7 @@ export default function CompoundDemo() {
               <Board width={smallBoardSize} height={smallBoardSize} />
             </ChessProvider>
           </div>
-          <div className="min-w-70 flex-1">
+          <div className="min-w-0 flex-1 sm:min-w-70">
             <CodeBlock code={boardOnlyCode} title="Board Only" />
           </div>
         </div>
