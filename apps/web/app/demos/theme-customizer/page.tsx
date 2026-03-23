@@ -4,7 +4,10 @@ import { useState } from "react";
 import { Chessboard, themePresets } from "@mdwebb/react-chess";
 import type { CustomTheme, ChessboardThemePreset } from "@mdwebb/react-chess";
 import { CodeBlock } from "@/components/CodeBlock";
-import { FadeIn } from "@/components/Motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useMaxBoardSize } from "@/hooks/useMaxBoardSize";
+import { cn } from "@/lib/utils";
 
 function ColorInput({
   label,
@@ -15,43 +18,25 @@ function ColorInput({
   value: string;
   onChange: (v: string) => void;
 }) {
-  // Extract hex for the color picker (fallback for rgba values)
   const hexValue = value.startsWith("#") ? value : "#b58863";
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+    <div className="flex items-center gap-3">
       <input
         type="color"
         value={hexValue}
         onChange={(e) => onChange(e.target.value)}
-        style={{
-          width: "2.5rem",
-          height: "2.5rem",
-          border: "2px solid var(--border)",
-          borderRadius: "0.5rem",
-          cursor: "pointer",
-          background: "transparent",
-          padding: "2px",
-        }}
+        className="h-10 w-10 cursor-pointer rounded-lg border-2 border-border bg-transparent p-0.5"
       />
-      <div style={{ flex: 1 }}>
-        <div style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--fg-secondary)", marginBottom: "0.25rem" }}>
+      <div className="flex-1">
+        <div className="mb-1 text-xs font-semibold text-(--fg-secondary)">
           {label}
         </div>
         <input
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          style={{
-            fontSize: "0.75rem",
-            padding: "0.375rem 0.5rem",
-            border: "1px solid var(--border)",
-            borderRadius: "0.375rem",
-            width: "100%",
-            fontFamily: "ui-monospace, monospace",
-            background: "var(--bg-tertiary)",
-            color: "var(--fg)",
-          }}
+          className="w-full rounded-md border border-border bg-(--bg-tertiary) px-2 py-1.5 font-mono text-xs text-(--fg)"
         />
       </div>
     </div>
@@ -63,6 +48,8 @@ export default function ThemeCustomizerDemo() {
     ...themePresets.brown,
   });
   const [activePreset, setActivePreset] = useState<string>("brown");
+  const maxSize = useMaxBoardSize();
+  const effectiveSize = Math.min(450, maxSize);
 
   const updateTheme = (key: keyof CustomTheme, value: string) => {
     setCustomTheme((prev) => ({ ...prev, [key]: value }));
@@ -75,21 +62,21 @@ export default function ThemeCustomizerDemo() {
   };
 
   return (
-    <div style={{ padding: "2.5rem 1.5rem", maxWidth: "72rem", margin: "0 auto" }}>
-      <div className="page-header">
-        <h1>Theme Customizer</h1>
-        <p>
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      <div className="mb-7">
+        <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Theme Customizer</h1>
+        <p className="max-w-xl text-(--fg-secondary)">
           Design custom board themes with live color pickers. Start from a preset
           and tweak every color, or build from scratch.
         </p>
       </div>
 
-      <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
+      <div className="flex flex-wrap gap-8">
         {/* Board */}
-        <div >
+        <div>
           <Chessboard
-            width={450}
-            height={450}
+            width={effectiveSize}
+            height={effectiveSize}
             theme={customTheme}
             showBoardControls={true}
             autoPromoteToQueen={true}
@@ -97,76 +84,70 @@ export default function ThemeCustomizerDemo() {
         </div>
 
         {/* Controls */}
-        <div  style={{ flex: 1, minWidth: "300px" }}>
+        <div className="min-w-70 flex-1">
           {/* Presets */}
-          <div className="card" style={{ padding: "1.25rem", marginBottom: "1rem" }}>
-            <label className="label">Presets</label>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0.5rem" }}>
-              {(["brown", "blue", "green", "gray"] as const).map((preset) => (
-                <button
-                  key={preset}
-                  onClick={() => loadPreset(preset)}
-                  className="btn btn--sm"
-                  style={{
-                    justifyContent: "center",
-                    background: activePreset === preset ? "var(--accent)" : "var(--bg-tertiary)",
-                    color: activePreset === preset ? "#0c0c0f" : "var(--fg-secondary)",
-                    border: activePreset === preset ? "none" : "1px solid var(--border)",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  <span
-                    style={{
-                      width: "0.75rem",
-                      height: "0.75rem",
-                      borderRadius: "50%",
-                      background: themePresets[preset].darkSquare,
-                      border: "1px solid rgba(255,255,255,0.1)",
-                    }}
-                  />
-                  {preset}
-                </button>
-              ))}
-            </div>
-          </div>
+          <Card className="mb-4" size="sm">
+            <CardContent>
+              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Presets</label>
+              <div className="grid grid-cols-4 gap-2">
+                {(["brown", "blue", "green", "gray"] as const).map((preset) => (
+                  <Button
+                    key={preset}
+                    size="sm"
+                    variant={activePreset === preset ? "default" : "outline"}
+                    onClick={() => loadPreset(preset)}
+                    className="capitalize"
+                  >
+                    <span
+                      className="size-3 rounded-full border border-white/10"
+                      style={{ background: themePresets[preset].darkSquare }}
+                    />
+                    {preset}
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Color pickers */}
-          <div className="card" style={{ padding: "1.25rem", marginBottom: "1rem" }}>
-            <label className="label">Square Colors</label>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              <ColorInput
-                label="Light Square"
-                value={customTheme.lightSquare}
-                onChange={(v) => updateTheme("lightSquare", v)}
-              />
-              <ColorInput
-                label="Dark Square"
-                value={customTheme.darkSquare}
-                onChange={(v) => updateTheme("darkSquare", v)}
-              />
-            </div>
+          <Card className="mb-4" size="sm">
+            <CardContent>
+              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Square Colors</label>
+              <div className="flex flex-col gap-3">
+                <ColorInput
+                  label="Light Square"
+                  value={customTheme.lightSquare}
+                  onChange={(v) => updateTheme("lightSquare", v)}
+                />
+                <ColorInput
+                  label="Dark Square"
+                  value={customTheme.darkSquare}
+                  onChange={(v) => updateTheme("darkSquare", v)}
+                />
+              </div>
 
-            <div style={{ height: "1px", background: "var(--border)", margin: "1rem 0" }} />
+              <div className="my-4 h-px bg-border" />
 
-            <label className="label">Interaction Colors</label>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              <ColorInput
-                label="Selected Square"
-                value={customTheme.selectedSquare || "rgba(20, 85, 30, 0.5)"}
-                onChange={(v) => updateTheme("selectedSquare", v)}
-              />
-              <ColorInput
-                label="Last Move Highlight"
-                value={customTheme.lastMoveHighlight || "rgba(155, 199, 0, 0.41)"}
-                onChange={(v) => updateTheme("lastMoveHighlight", v)}
-              />
-              <ColorInput
-                label="Move Destination"
-                value={customTheme.moveDestination || "rgba(20, 85, 30, 0.5)"}
-                onChange={(v) => updateTheme("moveDestination", v)}
-              />
-            </div>
-          </div>
+              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Interaction Colors</label>
+              <div className="flex flex-col gap-3">
+                <ColorInput
+                  label="Selected Square"
+                  value={customTheme.selectedSquare || "rgba(20, 85, 30, 0.5)"}
+                  onChange={(v) => updateTheme("selectedSquare", v)}
+                />
+                <ColorInput
+                  label="Last Move Highlight"
+                  value={customTheme.lastMoveHighlight || "rgba(155, 199, 0, 0.41)"}
+                  onChange={(v) => updateTheme("lastMoveHighlight", v)}
+                />
+                <ColorInput
+                  label="Move Destination"
+                  value={customTheme.moveDestination || "rgba(20, 85, 30, 0.5)"}
+                  onChange={(v) => updateTheme("moveDestination", v)}
+                />
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Generated code */}
           <CodeBlock

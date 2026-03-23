@@ -86,13 +86,14 @@ export const Board = React.forwardRef<HTMLDivElement, BoardProps>(
       ctx?.setApi(cg);
 
       // Chessground calculates piece positions from container dimensions at
-      // init time. If CSS hasn't fully applied yet (common on first render),
-      // pieces can be misaligned. Redrawing after the browser completes
-      // layout ensures correct positioning.
-      const rafId = requestAnimationFrame(() => cg.redrawAll());
+      // init time. If the container is mid-animation or CSS hasn't fully
+      // applied, pieces can be misaligned. A ResizeObserver catches any
+      // layout shift (e.g. scale animations completing) and redraws.
+      const ro = new ResizeObserver(() => cg.redrawAll());
+      ro.observe(el);
 
       return () => {
-        cancelAnimationFrame(rafId);
+        ro.disconnect();
         cg.destroy();
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps

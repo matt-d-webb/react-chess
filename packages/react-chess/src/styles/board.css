@@ -160,6 +160,12 @@
   margin-right: 0.5rem;
 }
 
+.rc-chessboard__board-column {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
 /* Controls bar — navigation + board controls on one line */
 .rc-controls-bar {
   display: flex;

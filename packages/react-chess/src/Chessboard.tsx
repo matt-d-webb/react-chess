@@ -93,16 +93,30 @@ const ChessboardInner = forwardRef<ChessboardRef, ChessboardProps>(
             isVertical && "rc-chessboard__inner--vertical"
           )}
         >
-          <Board
-            width={width}
-            height={height}
-            showCoordinates={showCoordinates}
-            className={boardClassName}
-            style={boardStyle}
-            draggable={draggable}
-            movable={movable}
-            animation={animation}
-          />
+          <div className="rc-chessboard__board-column">
+            <Board
+              width={width}
+              height={height}
+              showCoordinates={showCoordinates}
+              className={boardClassName}
+              style={boardStyle}
+              draggable={draggable}
+              movable={movable}
+              animation={animation}
+            />
+
+            {(showNavigation || showBoardControls) && !isBoardOnly && (
+              <div className="rc-controls-bar">
+                {showNavigation && (
+                  <Navigation
+                    className={navigationClassName}
+                    style={navigationStyle}
+                  />
+                )}
+                {showBoardControls && <BoardControls />}
+              </div>
+            )}
+          </div>
 
           {showMoveHistory && !isBoardOnly && (
             <div
@@ -118,18 +132,6 @@ const ChessboardInner = forwardRef<ChessboardRef, ChessboardProps>(
             </div>
           )}
         </div>
-
-        {(showNavigation || showBoardControls) && !isBoardOnly && (
-          <div className="rc-controls-bar">
-            {showNavigation && (
-              <Navigation
-                className={navigationClassName}
-                style={navigationStyle}
-              />
-            )}
-            {showBoardControls && <BoardControls />}
-          </div>
-        )}
         {children}
       </div>
     );

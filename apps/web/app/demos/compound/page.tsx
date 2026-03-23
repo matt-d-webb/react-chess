@@ -8,6 +8,8 @@ import {
   BoardControls,
 } from "@mdwebb/react-chess";
 import { CodeBlock } from "@/components/CodeBlock";
+import { Badge } from "@/components/ui/badge";
+import { useMaxBoardSize } from "@/hooks/useMaxBoardSize";
 
 const samplePgn = `[Event "World Championship"]
 [Site "Reykjavik ISL"]
@@ -66,106 +68,106 @@ const boardOnlyCode = `// Board-only — no history panel, just the board
 </ChessProvider>`;
 
 export default function CompoundDemo() {
+  const maxSize = useMaxBoardSize();
+  const boardSize = Math.min(450, maxSize);
+  const smallBoardSize = Math.min(300, maxSize);
+  const isMobile = maxSize < 500;
+
   return (
-    <div style={{ padding: "2.5rem 1.5rem", maxWidth: "72rem", margin: "0 auto" }}>
-      <div className="page-header">
-        <h1>Compound Components</h1>
-        <p>
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      <div className="mb-7">
+        <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Compound Components</h1>
+        <p className="max-w-xl text-(--fg-secondary)">
           Build custom layouts by composing Board, MoveHistory, Navigation, and BoardControls
           independently within a ChessProvider. Each component reads from shared context.
         </p>
       </div>
 
       {/* Layout 1: Side-by-side */}
-      <section style={{ marginBottom: "4rem" }}>
-        <div  style={{ marginBottom: "1.5rem" }}>
-          <span className="badge badge--accent" style={{ marginBottom: "0.5rem" }}>Layout 1</span>
-          <h2 style={{ fontSize: "1.375rem", fontWeight: 700 }}>Side-by-Side</h2>
-          <p style={{ color: "var(--fg-secondary)", fontSize: "0.875rem" }}>
+      <section className="mb-16">
+        <div className="mb-6">
+          <Badge variant="outline" className="mb-2">Layout 1</Badge>
+          <h2 className="text-xl font-bold">Side-by-Side</h2>
+          <p className="text-sm text-(--fg-secondary)">
             Board and move history displayed horizontally with controls spanning below.
           </p>
         </div>
 
-        <div >
-          <ChessProvider
-            pgn={samplePgn}
-            theme="blue"
-            enableKeyboardNavigation={true}
-            autoPromoteToQueen={true}
+        <ChessProvider
+          pgn={samplePgn}
+          theme="blue"
+          enableKeyboardNavigation={true}
+          autoPromoteToQueen={true}
+        >
+          <div
+            className="max-w-212.5 gap-4"
+            style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : `${boardSize}px 1fr`,
+              gridTemplateRows: isMobile ? "auto" : `${boardSize}px auto`,
+            }}
           >
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "450px 1fr",
-                gridTemplateRows: "450px auto",
-                gap: "1rem",
-                maxWidth: "850px",
-              }}
-            >
-              <Board width={450} height={450} />
-              <div style={{ height: "450px" }}>
-                <MoveHistory />
-              </div>
-              <div className="rc-controls-bar" style={{ gridColumn: "1 / -1" }}>
-                <Navigation />
-                <BoardControls />
-              </div>
+            <Board width={boardSize} height={boardSize} />
+            <div style={{ height: isMobile ? "200px" : `${boardSize}px` }}>
+              <MoveHistory />
             </div>
-          </ChessProvider>
-        </div>
+            <div className="rc-controls-bar" style={{ gridColumn: "1 / -1" }}>
+              <Navigation />
+              <BoardControls />
+            </div>
+          </div>
+        </ChessProvider>
 
-        <div style={{ marginTop: "1.5rem" }}>
+        <div className="mt-6">
           <CodeBlock code={sideBySlideCode} title="Side-by-Side Layout" showLineNumbers />
         </div>
       </section>
 
       {/* Layout 2: Stacked */}
-      <section style={{ marginBottom: "4rem" }}>
-        <div  style={{ marginBottom: "1.5rem" }}>
-          <span className="badge badge--accent" style={{ marginBottom: "0.5rem" }}>Layout 2</span>
-          <h2 style={{ fontSize: "1.375rem", fontWeight: 700 }}>Stacked Vertical</h2>
-          <p style={{ color: "var(--fg-secondary)", fontSize: "0.875rem" }}>
+      <section className="mb-16">
+        <div className="mb-6">
+          <Badge variant="outline" className="mb-2">Layout 2</Badge>
+          <h2 className="text-xl font-bold">Stacked Vertical</h2>
+          <p className="text-sm text-(--fg-secondary)">
             Everything stacked vertically — perfect for narrow containers or mobile.
           </p>
         </div>
 
-        <div >
-          <ChessProvider pgn={samplePgn} theme="green" autoPromoteToQueen={true}>
-            <div style={{ maxWidth: "450px" }}>
-              <Board width={450} height={450} />
-              <div className="rc-controls-bar">
-                <Navigation />
-                <BoardControls />
-              </div>
-              <div style={{ height: "200px", marginTop: "0.5rem" }}>
-                <MoveHistory />
-              </div>
+        <ChessProvider pgn={samplePgn} theme="green" autoPromoteToQueen={true}>
+          <div style={{ maxWidth: `${boardSize}px` }}>
+            <Board width={boardSize} height={boardSize} />
+            <div className="rc-controls-bar">
+              <Navigation />
+              <BoardControls />
             </div>
-          </ChessProvider>
-        </div>
+            <div className="mt-2" style={{ height: "200px" }}>
+              <MoveHistory />
+            </div>
+          </div>
+        </ChessProvider>
 
-        <div style={{ marginTop: "1.5rem", maxWidth: "450px" }}>
+        <div className="mt-6" style={{ maxWidth: `${boardSize}px` }}>
           <CodeBlock code={verticalCode} title="Vertical Layout" />
         </div>
       </section>
 
       {/* Layout 3: Board only */}
       <section>
-        <div  style={{ marginBottom: "1.5rem" }}>
-          <span className="badge badge--accent" style={{ marginBottom: "0.5rem" }}>Layout 3</span>
-          <h2 style={{ fontSize: "1.375rem", fontWeight: 700 }}>Board Only</h2>
-          <p style={{ color: "var(--fg-secondary)", fontSize: "0.875rem" }}>
+        <div className="mb-6">
+          <Badge variant="outline" className="mb-2">Layout 3</Badge>
+          <h2 className="text-xl font-bold">Board Only</h2>
+          <p className="text-sm text-(--fg-secondary)">
             Minimal — just the board, nothing else. Use the ref for programmatic control.
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap", alignItems: "start" }}>
-          <div >
+        <div className="flex flex-wrap items-start gap-8">
+          <div>
             <ChessProvider theme="gray" autoPromoteToQueen={true}>
-              <Board width={300} height={300} />
+              <Board width={smallBoardSize} height={smallBoardSize} />
             </ChessProvider>
           </div>
-          <div style={{ flex: 1, minWidth: "280px" }}>
+          <div className="min-w-70 flex-1">
             <CodeBlock code={boardOnlyCode} title="Board Only" />
           </div>
         </div>

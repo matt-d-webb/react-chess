@@ -5,6 +5,9 @@ import { Chessboard } from "@mdwebb/react-chess";
 import type { PieceColor, ChessboardThemePreset, ChessboardLayout } from "@mdwebb/react-chess";
 import { CodeBlock } from "@/components/CodeBlock";
 import { FadeIn } from "@/components/Motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useMaxBoardSize } from "@/hooks/useMaxBoardSize";
 
 export default function BasicDemo() {
   const [orientation, setOrientation] = useState<PieceColor>("white");
@@ -16,23 +19,27 @@ export default function BasicDemo() {
   const [boardSize, setBoardSize] = useState(450);
   const [layout, setLayout] = useState<ChessboardLayout>("board-only");
   const [lastMove, setLastMove] = useState("");
+  const maxSize = useMaxBoardSize();
+  const effectiveSize = Math.min(boardSize, maxSize);
 
   return (
-    <div style={{ padding: "2.5rem 1.5rem", maxWidth: "72rem", margin: "0 auto" }}>
-      <FadeIn className="page-header">
-        <h1>Basic Board</h1>
-        <p>
-          Interactive chess board with drag-and-drop moves, board flip, coordinate labels,
-          and pawn promotion UI. Configure every option below.
-        </p>
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      <FadeIn>
+        <div className="mb-7">
+          <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Basic Board</h1>
+          <p className="max-w-xl text-(--fg-secondary)">
+            Interactive chess board with drag-and-drop moves, board flip, coordinate labels,
+            and pawn promotion UI. Configure every option below.
+          </p>
+        </div>
       </FadeIn>
 
-      <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
+      <div className="flex flex-wrap gap-6">
         {/* Board */}
-        <div className="">
+        <div>
           <Chessboard
-            width={boardSize}
-            height={boardSize}
+            width={effectiveSize}
+            height={effectiveSize}
             theme={theme}
             orientation={orientation}
             showBoardControls={showControls}
@@ -60,130 +67,112 @@ export default function BasicDemo() {
         </div>
 
         {/* Controls panel */}
-        <div
-          className=""
-          style={{ flex: 1, minWidth: "280px" }}
-        >
+        <div className="min-w-70 flex-1">
           {/* Stats */}
-          <div
-            className="card"
-            style={{
-              padding: "1rem 1.25rem",
-              marginBottom: "1rem",
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              gap: "1rem",
-              textAlign: "center",
-            }}
-          >
-            <div>
-              <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent)" }}>{moveCount}</div>
-              <div style={{ fontSize: "0.6875rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Moves</div>
-            </div>
-            <div>
-              <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent)" }}>{lastMove || "—"}</div>
-              <div style={{ fontSize: "0.6875rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Last</div>
-            </div>
-            <div>
-              <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent)" }}>{orientation === "white" ? "♔" : "♚"}</div>
-              <div style={{ fontSize: "0.6875rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Side</div>
-            </div>
-          </div>
+          <Card className="mb-4" size="sm">
+            <CardContent>
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-extrabold text-(--accent-site)">{moveCount}</div>
+                  <div className="text-[0.6875rem] uppercase tracking-wider text-(--muted-text)">Moves</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-extrabold text-(--accent-site)">{lastMove || "—"}</div>
+                  <div className="text-[0.6875rem] uppercase tracking-wider text-(--muted-text)">Last</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-extrabold text-(--accent-site)">{orientation === "white" ? "♔" : "♚"}</div>
+                  <div className="text-[0.6875rem] uppercase tracking-wider text-(--muted-text)">Side</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Configuration */}
-          <div className="card" style={{ padding: "1.25rem", marginBottom: "1rem" }}>
-            <h3 style={{ fontWeight: 700, marginBottom: "1rem", fontSize: "0.875rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--fg-secondary)" }}>
-              Configuration
-            </h3>
+          <Card className="mb-4" size="sm">
+            <CardContent>
+              <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-(--fg-secondary)">
+                Configuration
+              </h3>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-              <div>
-                <label className="label">Theme</label>
-                <select
-                  className="select"
-                  value={theme}
-                  onChange={(e) => setTheme(e.target.value as ChessboardThemePreset)}
-                  style={{ width: "100%" }}
-                >
-                  <option value="brown">Brown</option>
-                  <option value="blue">Blue</option>
-                  <option value="green">Green</option>
-                  <option value="gray">Gray</option>
-                </select>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Theme</label>
+                  <select
+                    className="w-full rounded-lg border border-border bg-(--bg-secondary) px-3 py-2 text-sm text-(--fg)"
+                    value={theme}
+                    onChange={(e) => setTheme(e.target.value as ChessboardThemePreset)}
+                  >
+                    <option value="brown">Brown</option>
+                    <option value="blue">Blue</option>
+                    <option value="green">Green</option>
+                    <option value="gray">Gray</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Board Size</label>
+                  <select
+                    className="w-full rounded-lg border border-border bg-(--bg-secondary) px-3 py-2 text-sm text-(--fg)"
+                    value={boardSize}
+                    onChange={(e) => setBoardSize(Number(e.target.value))}
+                  >
+                    <option value={350}>350px</option>
+                    <option value={400}>400px</option>
+                    <option value={450}>450px</option>
+                    <option value={500}>500px</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Layout</label>
+                  <select
+                    className="w-full rounded-lg border border-border bg-(--bg-secondary) px-3 py-2 text-sm text-(--fg)"
+                    value={layout}
+                    onChange={(e) => setLayout(e.target.value as ChessboardLayout)}
+                  >
+                    <option value="board-only">Board Only</option>
+                    <option value="horizontal">Horizontal</option>
+                    <option value="vertical">Vertical</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Orientation</label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setOrientation((o) => (o === "white" ? "black" : "white"))}
+                  >
+                    🔄 {orientation}
+                  </Button>
+                </div>
               </div>
 
-              <div>
-                <label className="label">Board Size</label>
-                <select
-                  className="select"
-                  value={boardSize}
-                  onChange={(e) => setBoardSize(Number(e.target.value))}
-                  style={{ width: "100%" }}
-                >
-                  <option value={350}>350px</option>
-                  <option value={400}>400px</option>
-                  <option value={450}>450px</option>
-                  <option value={500}>500px</option>
-                </select>
+              <div className="mt-3 flex gap-4">
+                <label className="flex cursor-pointer items-center gap-2 text-[0.8125rem] text-(--fg-secondary)">
+                  <input type="checkbox" checked={showCoords} onChange={(e) => setShowCoords(e.target.checked)} />
+                  Coordinates
+                </label>
+                <label className="flex cursor-pointer items-center gap-2 text-[0.8125rem] text-(--fg-secondary)">
+                  <input type="checkbox" checked={showControls} onChange={(e) => setShowControls(e.target.checked)} />
+                  Controls
+                </label>
               </div>
-
-              <div>
-                <label className="label">Layout</label>
-                <select
-                  className="select"
-                  value={layout}
-                  onChange={(e) => setLayout(e.target.value as ChessboardLayout)}
-                  style={{ width: "100%" }}
-                >
-                  <option value="board-only">Board Only</option>
-                  <option value="horizontal">Horizontal</option>
-                  <option value="vertical">Vertical</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="label">Orientation</label>
-                <button
-                  className="btn btn--outline btn--sm"
-                  onClick={() => setOrientation((o) => (o === "white" ? "black" : "white"))}
-                  style={{ width: "100%" }}
-                >
-                  🔄 {orientation}
-                </button>
-              </div>
-            </div>
-
-            <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
-              <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.8125rem", color: "var(--fg-secondary)", cursor: "pointer" }}>
-                <input type="checkbox" checked={showCoords} onChange={(e) => setShowCoords(e.target.checked)} />
-                Coordinates
-              </label>
-              <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.8125rem", color: "var(--fg-secondary)", cursor: "pointer" }}>
-                <input type="checkbox" checked={showControls} onChange={(e) => setShowControls(e.target.checked)} />
-                Controls
-              </label>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* FEN */}
           {fen && (
-            <div className="card" style={{ padding: "1rem 1.25rem", marginBottom: "1rem" }}>
-              <label className="label">Current FEN</label>
-              <code
-                style={{
-                  display: "block",
-                  padding: "0.625rem 0.75rem",
-                  background: "var(--bg-tertiary)",
-                  borderRadius: "0.375rem",
-                  fontSize: "0.6875rem",
-                  wordBreak: "break-all",
-                  color: "var(--fg-secondary)",
-                  fontFamily: "ui-monospace, monospace",
-                }}
-              >
-                {fen}
-              </code>
-            </div>
+            <Card className="mb-4" size="sm">
+              <CardContent>
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Current FEN</label>
+                <code className="block break-all rounded-md bg-(--bg-tertiary) px-3 py-2.5 font-mono text-[0.6875rem] text-(--fg-secondary)">
+                  {fen}
+                </code>
+              </CardContent>
+            </Card>
           )}
 
           {/* Code */}

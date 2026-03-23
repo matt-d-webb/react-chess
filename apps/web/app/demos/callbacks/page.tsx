@@ -4,6 +4,9 @@ import { useState, useRef, useCallback } from "react";
 import { Chessboard } from "@mdwebb/react-chess";
 import type { ChessboardRef, GameOverResult, PieceColor } from "@mdwebb/react-chess";
 import { CodeBlock } from "@/components/CodeBlock";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useMaxBoardSize } from "@/hooks/useMaxBoardSize";
 
 interface LogEntry {
   id: number;
@@ -17,8 +20,8 @@ const typeConfig: Record<LogEntry["type"], { color: string; label: string }> = {
   check: { color: "var(--warning)", label: "CHECK" },
   gameover: { color: "var(--danger)", label: "GAME OVER" },
   promotion: { color: "var(--purple)", label: "PROMOTE" },
-  illegal: { color: "var(--muted)", label: "ILLEGAL" },
-  flip: { color: "var(--accent)", label: "FLIP" },
+  illegal: { color: "var(--muted-text)", label: "ILLEGAL" },
+  flip: { color: "var(--accent-site)", label: "FLIP" },
   position: { color: "var(--success)", label: "POSITION" },
 };
 
@@ -59,6 +62,8 @@ export default function CallbacksDemo() {
   });
   const boardRef = useRef<ChessboardRef>(null);
   const idRef = useRef(0);
+  const maxSize = useMaxBoardSize();
+  const effectiveSize = Math.min(450, maxSize);
 
   const addLog = useCallback(
     (type: LogEntry["type"], message: string) => {
@@ -76,64 +81,52 @@ export default function CallbacksDemo() {
   );
 
   return (
-    <div style={{ padding: "2.5rem 1.5rem", maxWidth: "72rem", margin: "0 auto" }}>
-      <div className="page-header">
-        <h1>Game Callbacks</h1>
-        <p>
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      <div className="mb-7">
+        <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Game Callbacks</h1>
+        <p className="max-w-xl text-(--fg-secondary)">
           React to game events with fully typed callbacks. Play moves on the board and
           watch events fire in real-time in the log panel.
         </p>
       </div>
 
       {/* Callback toggles */}
-      <div
-        className="card"
-        style={{
-          padding: "1rem 1.25rem",
-          marginBottom: "1.5rem",
-          display: "flex",
-          gap: "1rem",
-          flexWrap: "wrap",
-          alignItems: "center",
-        }}
-      >
-        <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-          Active callbacks:
-        </span>
-        {Object.entries(enabledCallbacks).map(([key, enabled]) => (
-          <label
-            key={key}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.375rem",
-              fontSize: "0.8125rem",
-              cursor: "pointer",
-              color: enabled ? typeConfig[key as LogEntry["type"]]?.color ?? "var(--fg)" : "var(--muted)",
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={enabled}
-              onChange={(e) =>
-                setEnabledCallbacks((prev) => ({
-                  ...prev,
-                  [key]: e.target.checked,
-                }))
-              }
-            />
-            {key}
-          </label>
-        ))}
-      </div>
+      <Card className="mb-6" size="sm">
+        <CardContent>
+          <div className="flex flex-wrap items-center gap-4">
+            <span className="text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">
+              Active callbacks:
+            </span>
+            {Object.entries(enabledCallbacks).map(([key, enabled]) => (
+              <label
+                key={key}
+                className="flex cursor-pointer items-center gap-1.5 text-[0.8125rem]"
+                style={{ color: enabled ? typeConfig[key as LogEntry["type"]]?.color ?? "var(--fg)" : "var(--muted-text)" }}
+              >
+                <input
+                  type="checkbox"
+                  checked={enabled}
+                  onChange={(e) =>
+                    setEnabledCallbacks((prev) => ({
+                      ...prev,
+                      [key]: e.target.checked,
+                    }))
+                  }
+                />
+                {key}
+              </label>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
-      <div style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap" }}>
+      <div className="flex flex-wrap gap-6">
         {/* Board */}
-        <div >
+        <div>
           <Chessboard
             ref={boardRef}
-            width={450}
-            height={450}
+            width={effectiveSize}
+            height={effectiveSize}
             theme="green"
             showBoardControls={true}
             onMove={
@@ -178,64 +171,28 @@ export default function CallbacksDemo() {
         </div>
 
         {/* Event log */}
-        <div
-          
-          style={{
-            flex: 1,
-            minWidth: "300px",
-            maxHeight: "500px",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <div
-            className="card"
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                padding: "0.75rem 1rem",
-                borderBottom: "1px solid var(--border)",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <span style={{ fontWeight: 700, fontSize: "0.875rem" }}>
+        <div className="flex max-h-125 min-w-70 flex-1 flex-col">
+          <Card className="flex flex-1 flex-col overflow-hidden">
+            <div className="flex items-center justify-between border-b border-border px-4 py-3">
+              <span className="text-sm font-bold">
                 Event Log
                 {logs.length > 0 && (
-                  <span style={{ color: "var(--muted)", fontWeight: 400, marginLeft: "0.5rem" }}>
+                  <span className="ml-2 font-normal text-(--muted-text)">
                     ({logs.length})
                   </span>
                 )}
               </span>
-              <button
-                className="btn btn--outline btn--sm"
+              <Button
+                variant="outline"
+                size="xs"
                 onClick={() => setLogs([])}
-                style={{ padding: "0.25rem 0.5rem", fontSize: "0.6875rem" }}
               >
                 Clear
-              </button>
+              </Button>
             </div>
-            <div
-              style={{
-                flex: 1,
-                overflow: "auto",
-                padding: "0.5rem",
-              }}
-            >
+            <div className="flex-1 overflow-auto p-2">
               {logs.length === 0 && (
-                <div style={{
-                  color: "var(--muted)",
-                  padding: "2rem 0",
-                  textAlign: "center",
-                  fontSize: "0.8125rem",
-                }}>
+                <div className="py-8 text-center text-[0.8125rem] text-(--muted-text)">
                   Play some moves to see events appear here...
                 </div>
               )}
@@ -244,42 +201,28 @@ export default function CallbacksDemo() {
                 return (
                   <div
                     key={log.id}
-                    
-                    style={{
-                      padding: "0.375rem 0.5rem",
-                      borderBottom: "1px solid var(--border)",
-                      display: "flex",
-                      gap: "0.5rem",
-                      alignItems: "baseline",
-                      fontFamily: "ui-monospace, monospace",
-                      fontSize: "0.75rem",
-                    }}
+                    className="flex items-baseline gap-2 border-b border-border px-2 py-1.5 font-mono text-xs"
                   >
-                    <span style={{ color: "var(--muted)", fontSize: "0.625rem", flexShrink: 0 }}>
+                    <span className="shrink-0 text-[0.625rem]" style={{ color: "var(--muted-text)" }}>
                       {log.timestamp}
                     </span>
                     <span
-                      style={{
-                        color: config.color,
-                        fontWeight: 700,
-                        fontSize: "0.625rem",
-                        flexShrink: 0,
-                        minWidth: "5rem",
-                      }}
+                      className="min-w-20 shrink-0 text-[0.625rem] font-bold"
+                      style={{ color: config.color }}
                     >
                       {config.label}
                     </span>
-                    <span style={{ color: "var(--fg-secondary)" }}>{log.message}</span>
+                    <span className="text-(--fg-secondary)">{log.message}</span>
                   </div>
                 );
               })}
             </div>
-          </div>
+          </Card>
         </div>
       </div>
 
       {/* Code reference */}
-      <div style={{ marginTop: "2rem" }}>
+      <div className="mt-8">
         <CodeBlock code={callbacksCode} title="All Callbacks" showLineNumbers />
       </div>
     </div>

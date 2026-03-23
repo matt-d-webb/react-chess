@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Chessboard } from "@mdwebb/react-chess";
 import type { ChessboardThemePreset } from "@mdwebb/react-chess";
 import { CodeBlock } from "@/components/CodeBlock";
-import { FadeIn } from "@/components/Motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { useMaxBoardSize } from "@/hooks/useMaxBoardSize";
 
 const SAMPLE_PGNS: Record<string, { pgn: string; description: string }> = {
   "Fischer vs Byrne (1956)": {
@@ -88,91 +89,79 @@ export default function PGNViewerDemo() {
   const [selectedGame, setSelectedGame] = useState("Fischer vs Byrne (1956)");
   const [theme, setTheme] = useState<ChessboardThemePreset>("brown");
   const [boardSize, setBoardSize] = useState(450);
+  const maxSize = useMaxBoardSize();
+  const effectiveSize = Math.min(boardSize, maxSize);
 
   const game = SAMPLE_PGNS[selectedGame];
 
   return (
-    <div style={{ padding: "2.5rem 1.5rem", maxWidth: "72rem", margin: "0 auto" }}>
-      <div className="page-header">
-        <h1>PGN Viewer</h1>
-        <p>
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      <div className="mb-7">
+        <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">PGN Viewer</h1>
+        <p className="max-w-xl text-(--fg-secondary)">
           Browse famous chess games with move history, annotations, and keyboard navigation.
           Use ← → arrow keys to step through moves.
         </p>
       </div>
 
       {/* Controls */}
-      <div
-        className="card"
-        style={{
-          padding: "1rem 1.25rem",
-          marginBottom: "1.5rem",
-          display: "flex",
-          gap: "1rem",
-          flexWrap: "wrap",
-          alignItems: "end",
-        }}
-      >
-        <div style={{ flex: 1, minWidth: "200px" }}>
-          <label className="label">Game</label>
-          <select
-            className="select"
-            value={selectedGame}
-            onChange={(e) => setSelectedGame(e.target.value)}
-            style={{ width: "100%" }}
-          >
-            {Object.keys(SAMPLE_PGNS).map((name) => (
-              <option key={name} value={name}>{name}</option>
-            ))}
-          </select>
-        </div>
+      <Card className="mb-6" size="sm">
+        <CardContent>
+          <div className="flex flex-wrap items-end gap-4">
+            <div className="min-w-50 flex-1">
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Game</label>
+              <select
+                className="w-full rounded-lg border border-border bg-(--bg-secondary) px-3 py-2 text-sm text-(--fg)"
+                value={selectedGame}
+                onChange={(e) => setSelectedGame(e.target.value)}
+              >
+                {Object.keys(SAMPLE_PGNS).map((name) => (
+                  <option key={name} value={name}>{name}</option>
+                ))}
+              </select>
+            </div>
 
-        <div>
-          <label className="label">Theme</label>
-          <select
-            className="select"
-            value={theme}
-            onChange={(e) => setTheme(e.target.value as ChessboardThemePreset)}
-          >
-            {(["brown", "blue", "green", "gray"] as const).map((t) => (
-              <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
-            ))}
-          </select>
-        </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Theme</label>
+              <select
+                className="rounded-lg border border-border bg-(--bg-secondary) px-3 py-2 text-sm text-(--fg)"
+                value={theme}
+                onChange={(e) => setTheme(e.target.value as ChessboardThemePreset)}
+              >
+                {(["brown", "blue", "green", "gray"] as const).map((t) => (
+                  <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
+                ))}
+              </select>
+            </div>
 
-        <div>
-          <label className="label">Size</label>
-          <select
-            className="select"
-            value={boardSize}
-            onChange={(e) => setBoardSize(Number(e.target.value))}
-          >
-            <option value={400}>400px</option>
-            <option value={450}>450px</option>
-            <option value={500}>500px</option>
-          </select>
-        </div>
-      </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Size</label>
+              <select
+                className="rounded-lg border border-border bg-(--bg-secondary) px-3 py-2 text-sm text-(--fg)"
+                value={boardSize}
+                onChange={(e) => setBoardSize(Number(e.target.value))}
+              >
+                <option value={400}>400px</option>
+                <option value={450}>450px</option>
+                <option value={500}>500px</option>
+              </select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Game description */}
-      <p
-        className=""
-        style={{
-          color: "var(--accent)",
-          fontSize: "0.875rem",
-          fontStyle: "italic",
-          marginBottom: "1rem",
-        }}
-      >
+      <p className="mb-4 text-sm italic text-(--accent-site)">
         {game.description}
       </p>
 
       {/* Board */}
-      <div className="">
+      <div>
         <Chessboard
           key={selectedGame}
-          width={boardSize}
-          height={boardSize}
+          width={effectiveSize}
+          height={effectiveSize}
+          layout={maxSize < 500 ? "vertical" : undefined}
           theme={theme}
           pgn={game.pgn}
           showMoveHistory={true}
@@ -180,12 +169,12 @@ export default function PGNViewerDemo() {
           showBoardControls={true}
           enableKeyboardNavigation={true}
           autoPromoteToQueen={true}
-          moveHistoryWidth="350px"
+          moveHistoryWidth={maxSize < 500 ? `${effectiveSize}px` : "350px"}
         />
       </div>
 
       {/* Code */}
-      <div style={{ marginTop: "2rem" }}>
+      <div className="mt-8">
         <CodeBlock
           title="Usage"
           code={`<Chessboard
