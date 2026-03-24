@@ -17,7 +17,7 @@ export default function BasicDemo() {
   const [showCoords, setShowCoords] = useState(true);
   const [showControls, setShowControls] = useState(true);
   const [boardSize, setBoardSize] = useState(450);
-  const [layout, setLayout] = useState<ChessboardLayout>("board-only");
+  const [layout, setLayout] = useState<ChessboardLayout>("vertical");
   const [lastMove, setLastMove] = useState("");
   const maxSize = useMaxBoardSize();
   const effectiveSize = Math.min(boardSize, maxSize);

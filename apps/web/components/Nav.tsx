@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const links = [
+  ["Docs", "/docs"],
   ["Basic", "/demos/basic"],
   ["PGN Viewer", "/demos/pgn-viewer"],
   ["Themes", "/demos/theme-customizer"],
