@@ -1,6 +1,6 @@
 {
   "name": "@mdwebb/react-chess",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Feature-rich React chess board component with chessground and chess.js",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -11,7 +11,10 @@
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./styles": "./dist/assets/index.css"
+    "./styles": {
+      "types": "./dist/styles.d.ts",
+      "default": "./dist/assets/index.css"
+    }
   },
   "files": [
     "dist"

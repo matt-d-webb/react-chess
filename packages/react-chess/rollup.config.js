@@ -39,6 +39,8 @@ function concatChessgroundCSS() {
 
       const combined = `/* Chessground base */\n${cgBase}\n/* Chessground brown theme */\n${cgBrown}\n/* Chessground cburnett pieces */\n${cgPieces}\n/* React Chess component styles */\n${existing}`;
       writeFileSync(cssPath, combined);
+
+      writeFileSync(join(__dirname, "dist/styles.d.ts"), "export {};\n");
     },
   };
 }
