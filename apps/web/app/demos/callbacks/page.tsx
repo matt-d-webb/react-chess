@@ -6,6 +6,7 @@ import type { ChessboardRef, GameOverResult, PieceColor } from "@mdwebb/react-ch
 import { CodeBlock } from "@/components/CodeBlock";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { HudFrame, PulseDot, SectionTitle } from "@/components/Hud";
 import { useMaxBoardSize } from "@/hooks/useMaxBoardSize";
 
 interface LogEntry {
@@ -82,13 +83,12 @@ export default function CallbacksDemo() {
 
   return (
     <div className="mx-auto max-w-6xl overflow-x-hidden px-4 py-8 sm:px-6 sm:py-10">
-      <div className="mb-7">
-        <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Game Callbacks</h1>
-        <p className="max-w-xl text-(--fg-secondary)">
-          React to game events with fully typed callbacks. Play moves on the board and
-          watch events fire in real-time in the log panel.
-        </p>
-      </div>
+      <SectionTitle
+        index="demo_05"
+        label="callbacks"
+        title="Game Callbacks"
+        description="React to game events with fully typed callbacks. Play moves on the board and watch events fire in real-time in the log panel."
+      />
 
       {/* Callback toggles */}
       <Card className="mb-6" size="sm">
@@ -122,7 +122,7 @@ export default function CallbacksDemo() {
 
       <div className="flex flex-wrap gap-6">
         {/* Board */}
-        <div>
+        <HudFrame>
           <Chessboard
             ref={boardRef}
             width={effectiveSize}
@@ -168,17 +168,18 @@ export default function CallbacksDemo() {
                 : undefined
             }
           />
-        </div>
+        </HudFrame>
 
         {/* Event log */}
         <div className="flex max-h-125 min-w-0 flex-1 flex-col sm:min-w-70">
           <Card className="flex flex-1 flex-col overflow-hidden">
-            <div className="flex items-center justify-between border-b border-border px-4 py-3">
-              <span className="text-sm font-bold">
-                Event Log
+            <div className="flex items-center justify-between border-b border-border bg-(--bg-secondary) px-4 py-2.5">
+              <span className="flex items-center gap-2 font-mono text-[0.7rem] tracking-[0.18em] text-(--accent-site) uppercase">
+                <PulseDot tone="success" />
+                event_log
                 {logs.length > 0 && (
-                  <span className="ml-2 font-normal text-(--muted-text)">
-                    ({logs.length})
+                  <span className="text-(--muted-text)">
+                    [ {String(logs.length).padStart(3, "0")} ]
                   </span>
                 )}
               </span>
@@ -186,6 +187,7 @@ export default function CallbacksDemo() {
                 variant="outline"
                 size="xs"
                 onClick={() => setLogs([])}
+                className="font-mono text-[0.65rem] tracking-[0.14em] uppercase"
               >
                 Clear
               </Button>

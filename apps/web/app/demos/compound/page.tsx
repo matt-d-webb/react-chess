@@ -9,6 +9,7 @@ import {
 } from "@mdwebb/react-chess";
 import { CodeBlock } from "@/components/CodeBlock";
 import { Badge } from "@/components/ui/badge";
+import { HudFrame, SectionTitle } from "@/components/Hud";
 import { useMaxBoardSize } from "@/hooks/useMaxBoardSize";
 
 const samplePgn = `[Event "World Championship"]
@@ -75,13 +76,12 @@ export default function CompoundDemo() {
 
   return (
     <div className="mx-auto max-w-6xl overflow-x-hidden px-4 py-8 sm:px-6 sm:py-10">
-      <div className="mb-7">
-        <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Compound Components</h1>
-        <p className="max-w-xl text-(--fg-secondary)">
-          Build custom layouts by composing Board, MoveHistory, Navigation, and BoardControls
-          independently within a ChessProvider. Each component reads from shared context.
-        </p>
-      </div>
+      <SectionTitle
+        index="demo_04"
+        label="compound_api"
+        title="Compound Components"
+        description="Build custom layouts by composing Board, MoveHistory, Navigation, and BoardControls independently within a ChessProvider. Each component reads from shared context."
+      />
 
       {/* Layout 1: Side-by-side */}
       <section className="mb-16">
@@ -164,7 +164,9 @@ export default function CompoundDemo() {
         <div className="flex flex-wrap items-start gap-8">
           <div>
             <ChessProvider theme="gray" autoPromoteToQueen={true}>
-              <Board width={smallBoardSize} height={smallBoardSize} />
+              <HudFrame>
+                <Board width={smallBoardSize} height={smallBoardSize} />
+              </HudFrame>
             </ChessProvider>
           </div>
           <div className="min-w-0 flex-1 sm:min-w-70">

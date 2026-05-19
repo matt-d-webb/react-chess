@@ -5,6 +5,7 @@ import { Chessboard } from "@mdwebb/react-chess";
 import type { ChessboardThemePreset } from "@mdwebb/react-chess";
 import { CodeBlock } from "@/components/CodeBlock";
 import { Card, CardContent } from "@/components/ui/card";
+import { HudFrame, SectionTitle } from "@/components/Hud";
 import { useMaxBoardSize } from "@/hooks/useMaxBoardSize";
 
 const SAMPLE_PGNS: Record<string, { pgn: string; description: string }> = {
@@ -96,13 +97,12 @@ export default function PGNViewerDemo() {
 
   return (
     <div className="mx-auto max-w-6xl overflow-x-hidden px-4 py-8 sm:px-6 sm:py-10">
-      <div className="mb-7">
-        <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">PGN Viewer</h1>
-        <p className="max-w-xl text-(--fg-secondary)">
-          Browse famous chess games with move history, annotations, and keyboard navigation.
-          Use ← → arrow keys to step through moves.
-        </p>
-      </div>
+      <SectionTitle
+        index="demo_02"
+        label="pgn_viewer"
+        title="PGN Viewer"
+        description="Browse famous chess games with move history, annotations, and keyboard navigation. Use ← → arrow keys to step through moves."
+      />
 
       {/* Controls */}
       <Card className="mb-6" size="sm">
@@ -156,7 +156,7 @@ export default function PGNViewerDemo() {
       </p>
 
       {/* Board */}
-      <div>
+      <HudFrame>
         <Chessboard
           key={selectedGame}
           width={effectiveSize}
@@ -171,7 +171,7 @@ export default function PGNViewerDemo() {
           autoPromoteToQueen={true}
           moveHistoryWidth={maxSize < 500 ? `${effectiveSize}px` : "350px"}
         />
-      </div>
+      </HudFrame>
 
       {/* Code */}
       <div className="mt-8">

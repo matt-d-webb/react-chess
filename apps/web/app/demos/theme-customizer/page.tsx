@@ -6,6 +6,7 @@ import type { CustomTheme, ChessboardThemePreset } from "@mdwebb/react-chess";
 import { CodeBlock } from "@/components/CodeBlock";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { HudFrame, SectionTitle } from "@/components/Hud";
 import { useMaxBoardSize } from "@/hooks/useMaxBoardSize";
 import { cn } from "@/lib/utils";
 
@@ -63,17 +64,16 @@ export default function ThemeCustomizerDemo() {
 
   return (
     <div className="mx-auto max-w-6xl overflow-x-hidden px-4 py-8 sm:px-6 sm:py-10">
-      <div className="mb-7">
-        <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Theme Customizer</h1>
-        <p className="max-w-xl text-(--fg-secondary)">
-          Design custom board themes with live color pickers. Start from a preset
-          and tweak every color, or build from scratch.
-        </p>
-      </div>
+      <SectionTitle
+        index="demo_03"
+        label="theme_customizer"
+        title="Theme Customizer"
+        description="Design custom board themes with live color pickers. Start from a preset and tweak every color, or build from scratch."
+      />
 
       <div className="flex flex-wrap gap-8">
         {/* Board */}
-        <div>
+        <HudFrame tone="amber">
           <Chessboard
             width={effectiveSize}
             height={effectiveSize}
@@ -81,7 +81,7 @@ export default function ThemeCustomizerDemo() {
             showBoardControls={true}
             autoPromoteToQueen={true}
           />
-        </div>
+        </HudFrame>
 
         {/* Controls */}
         <div className="min-w-0 flex-1 sm:min-w-70">

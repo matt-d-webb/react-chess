@@ -17,10 +17,10 @@ import type {
   PieceColor,
 } from "@mdwebb/react-chess";
 import { CodeBlock } from "@/components/CodeBlock";
-import { FadeIn } from "@/components/Motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { HudFrame, SectionTitle } from "@/components/Hud";
 import { useMaxBoardSize } from "@/hooks/useMaxBoardSize";
 
 /* ─── Section nav ──────────────────────────────────────────────── */
@@ -372,17 +372,12 @@ boardRef.current?.api;   // chessground`;
   return (
     <div className="mx-auto max-w-6xl overflow-x-hidden px-4 py-8 sm:px-6 sm:py-10">
       {/* Title */}
-      <FadeIn>
-        <div className="mb-2">
-          <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">
-            API Reference
-          </h1>
-          <p className="max-w-xl text-(--fg-secondary)">
-            Complete component documentation with interactive examples.
-            Toggle any prop and see the board update in real time.
-          </p>
-        </div>
-      </FadeIn>
+      <SectionTitle
+        index="00"
+        label="api_reference"
+        title="API Reference"
+        description="Complete component documentation with interactive examples. Toggle any prop and see the board update in real time."
+      />
 
       {/* Section nav */}
       <nav className="sticky top-14 z-10 -mx-4 mb-4 overflow-x-auto border-b border-border bg-(--bg)/90 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6">
@@ -408,7 +403,7 @@ boardRef.current?.api;   // chessground`;
 
       <div className="flex flex-wrap gap-6">
         {/* Board */}
-        <div className="shrink-0">
+        <HudFrame className="shrink-0">
           <Chessboard
             key={`${usePgn}`}
             width={boardSize}
@@ -425,7 +420,7 @@ boardRef.current?.api;   // chessground`;
             enableKeyboardNavigation={enableKeyboard}
             moveHistoryWidth={isMobile ? `${boardSize}px` : "260px"}
           />
-        </div>
+        </HudFrame>
 
         {/* Controls */}
         <div className="min-w-0 flex-1 sm:min-w-64">

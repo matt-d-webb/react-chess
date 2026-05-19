@@ -4,9 +4,9 @@ import { useState } from "react";
 import { Chessboard } from "@mdwebb/react-chess";
 import type { PieceColor, ChessboardThemePreset, ChessboardLayout } from "@mdwebb/react-chess";
 import { CodeBlock } from "@/components/CodeBlock";
-import { FadeIn } from "@/components/Motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { HudFrame, SectionTitle, StatusReadout } from "@/components/Hud";
 import { useMaxBoardSize } from "@/hooks/useMaxBoardSize";
 
 export default function BasicDemo() {
@@ -25,19 +25,16 @@ export default function BasicDemo() {
 
   return (
     <div className="mx-auto max-w-6xl overflow-x-hidden px-4 py-8 sm:px-6 sm:py-10">
-      <FadeIn>
-        <div className="mb-7">
-          <h1 className="mb-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Basic Board</h1>
-          <p className="max-w-xl text-(--fg-secondary)">
-            Interactive chess board with drag-and-drop moves, board flip, coordinate labels,
-            and pawn promotion UI. Configure every option below.
-          </p>
-        </div>
-      </FadeIn>
+      <SectionTitle
+        index="demo_01"
+        label="basic_board"
+        title="Basic Board"
+        description="Interactive chess board with drag-and-drop moves, board flip, coordinate labels, and pawn promotion UI. Configure every option below."
+      />
 
       <div className="flex flex-wrap gap-6">
         {/* Board */}
-        <div>
+        <HudFrame>
           <Chessboard
             width={effectiveSize}
             height={effectiveSize}
@@ -65,29 +62,26 @@ export default function BasicDemo() {
               );
             }}
           />
-        </div>
+        </HudFrame>
 
         {/* Controls panel */}
         <div className="min-w-0 flex-1 sm:min-w-70">
-          {/* Stats */}
-          <Card className="mb-4" size="sm">
-            <CardContent>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="text-2xl font-extrabold text-(--accent-site)">{moveCount}</div>
-                  <div className="text-[0.6875rem] uppercase tracking-wider text-(--muted-text)">Moves</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-extrabold text-(--accent-site)">{lastMove || "—"}</div>
-                  <div className="text-[0.6875rem] uppercase tracking-wider text-(--muted-text)">Last</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-extrabold text-(--accent-site)">{orientation === "white" ? "♔" : "♚"}</div>
-                  <div className="text-[0.6875rem] uppercase tracking-wider text-(--muted-text)">Side</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* HUD stats */}
+          <div className="mb-4 grid grid-cols-3 gap-px overflow-hidden rounded-lg border border-border bg-border">
+            <div className="bg-(--card-bg) px-4 py-3">
+              <StatusReadout label="MOVES" value={String(moveCount).padStart(3, "0")} />
+            </div>
+            <div className="bg-(--card-bg) px-4 py-3">
+              <StatusReadout label="LAST" value={lastMove || "—"} tone="amber" />
+            </div>
+            <div className="bg-(--card-bg) px-4 py-3">
+              <StatusReadout
+                label="SIDE"
+                value={orientation.toUpperCase()}
+                tone={orientation === "white" ? "cyan" : "amber"}
+              />
+            </div>
+          </div>
 
           {/* Configuration */}
           <Card className="mb-4" size="sm">

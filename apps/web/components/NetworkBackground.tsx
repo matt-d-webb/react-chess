@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useTheme } from "next-themes";
 
 interface Node {
   x: number;
@@ -12,7 +11,6 @@ interface Node {
 
 export function NetworkBackground({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -24,14 +22,15 @@ export function NetworkBackground({ className }: { className?: string }) {
     let animationId: number;
     let nodes: Node[] = [];
 
-    const nodeCount = 60;
-    const connectionDistance = 150;
-    const speed = 0.3;
+    const nodeCount = 70;
+    const connectionDistance = 160;
+    const speed = 0.28;
 
     function resize() {
       const dpr = window.devicePixelRatio || 1;
       canvas!.width = canvas!.offsetWidth * dpr;
       canvas!.height = canvas!.offsetHeight * dpr;
+      ctx!.setTransform(1, 0, 0, 1, 0, 0);
       ctx!.scale(dpr, dpr);
     }
 
@@ -51,11 +50,9 @@ export function NetworkBackground({ className }: { className?: string }) {
       const h = canvas!.offsetHeight;
       ctx!.clearRect(0, 0, w, h);
 
-      const isDark = resolvedTheme === "dark";
-      const nodeColor = isDark ? "rgba(217, 70, 239, 0.5)" : "rgba(147, 51, 234, 0.3)";
-      const lineColor = isDark ? "rgba(217, 70, 239," : "rgba(147, 51, 234,";
+      const nodeColor = "rgba(8, 145, 178, 0.55)";
+      const lineColorRgb = "8, 145, 178";
 
-      // Update positions
       for (const node of nodes) {
         node.x += node.vx;
         node.y += node.vy;
@@ -67,7 +64,6 @@ export function NetworkBackground({ className }: { className?: string }) {
         node.y = Math.max(0, Math.min(h, node.y));
       }
 
-      // Draw connections
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const dx = nodes[i].x - nodes[j].x;
@@ -75,9 +71,9 @@ export function NetworkBackground({ className }: { className?: string }) {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < connectionDistance) {
-            const opacity = (1 - dist / connectionDistance) * (isDark ? 0.15 : 0.08);
+            const opacity = (1 - dist / connectionDistance) * 0.16;
             ctx!.beginPath();
-            ctx!.strokeStyle = `${lineColor}${opacity})`;
+            ctx!.strokeStyle = `rgba(${lineColorRgb}, ${opacity})`;
             ctx!.lineWidth = 1;
             ctx!.moveTo(nodes[i].x, nodes[i].y);
             ctx!.lineTo(nodes[j].x, nodes[j].y);
@@ -86,11 +82,10 @@ export function NetworkBackground({ className }: { className?: string }) {
         }
       }
 
-      // Draw nodes
       for (const node of nodes) {
         ctx!.beginPath();
         ctx!.fillStyle = nodeColor;
-        ctx!.arc(node.x, node.y, 1.5, 0, Math.PI * 2);
+        ctx!.arc(node.x, node.y, 1.4, 0, Math.PI * 2);
         ctx!.fill();
       }
 
@@ -101,16 +96,17 @@ export function NetworkBackground({ className }: { className?: string }) {
     initNodes();
     draw();
 
-    window.addEventListener("resize", () => {
+    const onResize = () => {
       resize();
       initNodes();
-    });
+    };
+    window.addEventListener("resize", onResize);
 
     return () => {
       cancelAnimationFrame(animationId);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", onResize);
     };
-  }, [resolvedTheme]);
+  }, []);
 
   return (
     <canvas
