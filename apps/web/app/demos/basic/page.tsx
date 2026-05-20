@@ -5,7 +5,6 @@ import { Chessboard } from "@mdwebb/react-chess";
 import type { PieceColor, ChessboardThemePreset, ChessboardLayout } from "@mdwebb/react-chess";
 import { CodeBlock } from "@/components/CodeBlock";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { HudFrame, SectionTitle, StatusReadout } from "@/components/Hud";
 import { useMaxBoardSize } from "@/hooks/useMaxBoardSize";
 
@@ -94,7 +93,7 @@ export default function BasicDemo() {
                 <div>
                   <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Theme</label>
                   <select
-                    className="w-full rounded-lg border border-border bg-(--bg-secondary) px-3 py-2 text-sm text-(--fg)"
+                    className="field-input"
                     value={theme}
                     onChange={(e) => setTheme(e.target.value as ChessboardThemePreset)}
                   >
@@ -108,7 +107,7 @@ export default function BasicDemo() {
                 <div>
                   <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Board Size</label>
                   <select
-                    className="w-full rounded-lg border border-border bg-(--bg-secondary) px-3 py-2 text-sm text-(--fg)"
+                    className="field-input"
                     value={boardSize}
                     onChange={(e) => setBoardSize(Number(e.target.value))}
                   >
@@ -122,7 +121,7 @@ export default function BasicDemo() {
                 <div>
                   <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Layout</label>
                   <select
-                    className="w-full rounded-lg border border-border bg-(--bg-secondary) px-3 py-2 text-sm text-(--fg)"
+                    className="field-input"
                     value={layout}
                     onChange={(e) => setLayout(e.target.value as ChessboardLayout)}
                   >
@@ -134,14 +133,14 @@ export default function BasicDemo() {
 
                 <div>
                   <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Orientation</label>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
-                    onClick={() => setOrientation((o) => (o === "white" ? "black" : "white"))}
+                  <select
+                    className="field-input"
+                    value={orientation}
+                    onChange={(e) => setOrientation(e.target.value as PieceColor)}
                   >
-                    🔄 {orientation}
-                  </Button>
+                    <option value="white">White</option>
+                    <option value="black">Black</option>
+                  </select>
                 </div>
               </div>
 

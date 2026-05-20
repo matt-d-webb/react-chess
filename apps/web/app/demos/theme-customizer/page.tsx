@@ -37,7 +37,7 @@ function ColorInput({
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full rounded-md border border-border bg-(--bg-tertiary) px-2 py-1.5 font-mono text-xs text-(--fg)"
+          className="field-input field-input-sm font-mono"
         />
       </div>
     </div>

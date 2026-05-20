@@ -111,7 +111,7 @@ export default function PGNViewerDemo() {
             <div className="min-w-0 flex-1 sm:min-w-50">
               <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Game</label>
               <select
-                className="w-full rounded-lg border border-border bg-(--bg-secondary) px-3 py-2 text-sm text-(--fg)"
+                className="field-input"
                 value={selectedGame}
                 onChange={(e) => setSelectedGame(e.target.value)}
               >
@@ -124,7 +124,7 @@ export default function PGNViewerDemo() {
             <div>
               <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Theme</label>
               <select
-                className="rounded-lg border border-border bg-(--bg-secondary) px-3 py-2 text-sm text-(--fg)"
+                className="field-input w-auto"
                 value={theme}
                 onChange={(e) => setTheme(e.target.value as ChessboardThemePreset)}
               >
@@ -137,7 +137,7 @@ export default function PGNViewerDemo() {
             <div>
               <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-(--fg-secondary)">Size</label>
               <select
-                className="rounded-lg border border-border bg-(--bg-secondary) px-3 py-2 text-sm text-(--fg)"
+                className="field-input w-auto"
                 value={boardSize}
                 onChange={(e) => setBoardSize(Number(e.target.value))}
               >

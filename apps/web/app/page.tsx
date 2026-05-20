@@ -135,7 +135,7 @@ export default function Home() {
 
         {/* Top corner readouts */}
         <div className="pointer-events-none absolute top-3 left-0 right-0 z-10 flex items-start justify-between px-4 font-mono text-[0.6rem] tracking-[0.18em] text-(--muted-text) uppercase sm:px-6">
-          <span>// region_a.boot</span>
+          <span>// component.boot</span>
           <span className="hidden sm:inline">// react.chess.runtime</span>
         </div>
 
