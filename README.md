@@ -262,4 +262,4 @@ pnpm build        # Build library + demo site
 
 ## License
 
-[MIT](./LICENCE) © Matt Webb
+[MIT](./LICENCE)
